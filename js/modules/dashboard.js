@@ -289,203 +289,185 @@ const DashboardModule = {
   async generatePDFReport() {
     // Collect all project data
     const project = App.currentProject;
-    const cover = await DB.get(STORES.COVER, project.id);
     const psrs = await DB.getAll(STORES.PSR, 'projectId', project.id);
     const latestPsr = psrs.sort((a, b) => new Date(b.reportDate || b.createdAt) - new Date(a.reportDate || a.createdAt))[0];
     const oilItems = await DB.getAll(STORES.OIL, 'projectId', project.id);
     const openOil = oilItems.filter(i => i.status !== 'completed');
     const participants = await DB.getAll(STORES.PARTICIPANTS, 'projectId', project.id);
-    const vacations = await DB.getAll(STORES.VACATION, 'projectId', project.id);
     const budgetItems = await DB.getAll(STORES.BUDGET, 'projectId', project.id);
-    const expenses = await DB.getAll(STORES.EXPENSES, 'projectId', project.id);
     
-    // Generate comprehensive HTML report for printing/PDF
-    const reportHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Project Report - ${project.name}</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 800px; margin: 0 auto; padding: 40px; }
-    .header { background: linear-gradient(135deg, #0B1F3F 0%, #1a3a6e 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; margin: -40px -40px 30px -40px; }
-    .header h1 { font-size: 28px; margin-bottom: 10px; }
-    .header p { color: #00B2E3; font-size: 16px; }
-    .section { margin-bottom: 30px; }
-    .section h2 { color: #0B1F3F; border-bottom: 2px solid #E31837; padding-bottom: 10px; margin-bottom: 15px; font-size: 20px; }
-    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
-    .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; }
-    .info-item label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
-    .info-item value { font-size: 14px; font-weight: 600; color: #333; }
-    .health-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .health-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid; }
-    .health-item.green { border-left-color: #10B981; }
-    .health-item.amber { border-left-color: #F59E0B; }
-    .health-item.red { border-left-color: #EF4444; }
-    .health-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .health-dot.green { background: #10B981; }
-    .health-dot.amber { background: #F59E0B; }
-    .health-dot.red { background: #EF4444; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-    th { background: #f8f9fa; font-weight: 600; color: #0B1F3F; }
-    .priority-high { color: #EF4444; font-weight: 600; }
-    .priority-medium { color: #F59E0B; font-weight: 600; }
-    .priority-low { color: #10B981; font-weight: 600; }
-    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
-    .status-active { background: #d1fae5; color: #059669; }
-    .status-pending { background: #fef3c7; color: #d97706; }
-    .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; }
-    @media print { .no-print { display: none; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>${project.name}</h1>
-      <p>Project Status Report · ${new Date().toLocaleDateString()}</p>
-    </div>
+    // Create a temporary div for PDF generation
+    const tempDiv = document.createElement('div');
+    tempDiv.style.cssText = 'position:absolute;left:-9999px;top:0;width:800px;background:white;padding:40px;font-family:Arial,sans-serif;';
+    document.body.appendChild(tempDiv);
     
-    <div class="section">
-      <h2>📋 Project Information</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <label>Project Code</label>
-          <value>${project.code || 'N/A'}</value>
+    const statusColors = {
+      green: '#10B981',
+      amber: '#F59E0B',
+      red: '#EF4444'
+    };
+    
+    // Generate report content
+    tempDiv.innerHTML = `
+      <div style="max-width:800px;margin:0 auto;">
+        <div style="background:linear-gradient(135deg, #0B1F3F 0%, #1a3a6e 100%);color:white;padding:30px;border-radius:8px 8px 0 0;margin:-40px -40px 30px -40px;">
+          <h1 style="font-size:28px;margin:0 0 10px 0;">${project.name}</h1>
+          <p style="color:#00B2E3;font-size:16px;margin:0;">Project Status Report · ${new Date().toLocaleDateString()}</p>
         </div>
-        <div class="info-item">
-          <label>Status</label>
-          <value>${project.status || 'N/A'}</value>
+        
+        <div style="margin-bottom:30px;">
+          <h2 style="color:#0B1F3F;border-bottom:2px solid #E31837;padding-bottom:10px;margin:0 0 15px 0;font-size:20px;">📋 Project Information</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Project Code</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">${project.code || 'N/A'}</div>
+            </div>
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Status</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">${project.status || 'N/A'}</div>
+            </div>
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Overall Progress</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">${latestPsr?.progress || 0}%</div>
+            </div>
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Report Date</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">${latestPsr?.reportDate || new Date().toLocaleDateString()}</div>
+            </div>
+          </div>
         </div>
-        <div class="info-item">
-          <label>Overall Progress</label>
-          <value>${latestPsr?.progress || 0}%</value>
+        
+        ${latestPsr ? `
+        <div style="margin-bottom:30px;">
+          <h2 style="color:#0B1F3F;border-bottom:2px solid #E31837;padding-bottom:10px;margin:0 0 15px 0;font-size:20px;">📊 Project Health</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            ${['schedule', 'budget', 'resources', 'scope'].map(m => `
+              <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8f9fa;border-radius:6px;border-left:4px solid ${statusColors[latestPsr[m]] || '#10B981'};">
+                <div style="width:12px;height:12px;border-radius:50%;background:${statusColors[latestPsr[m]] || '#10B981'};"></div>
+                <div>
+                  <div style="font-weight:600;text-transform:capitalize;">${m}</div>
+                  <div style="font-size:12px;color:#666;">${latestPsr[m + 'Comment'] || 'On track'}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
-        <div class="info-item">
-          <label>Report Date</label>
-          <value>${latestPsr?.reportDate || new Date().toLocaleDateString()}</value>
+        ` : ''}
+        
+        ${openOil.length > 0 ? `
+        <div style="margin-bottom:30px;">
+          <h2 style="color:#0B1F3F;border-bottom:2px solid #E31837;padding-bottom:10px;margin:0 0 15px 0;font-size:20px;">⚠️ Open Items (${openOil.length})</h2>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="background:#f8f9fa;">
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Description</th>
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Priority</th>
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Assigned To</th>
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${openOil.map(item => `
+                <tr>
+                  <td style="padding:10px;border-bottom:1px solid #eee;">${item.description}</td>
+                  <td style="padding:10px;border-bottom:1px solid #eee;color:${statusColors[item.priority] || '#333'};font-weight:600;">${item.priority.toUpperCase()}</td>
+                  <td style="padding:10px;border-bottom:1px solid #eee;">${item.assignedTo || 'Unassigned'}</td>
+                  <td style="padding:10px;border-bottom:1px solid #eee;">${item.targetDate || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ` : ''}
+        
+        ${participants.length > 0 ? `
+        <div style="margin-bottom:30px;">
+          <h2 style="color:#0B1F3F;border-bottom:2px solid #E31837;padding-bottom:10px;margin:0 0 15px 0;font-size:20px;">👥 Team Members (${participants.length})</h2>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="background:#f8f9fa;">
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Name</th>
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Role</th>
+                <th style="padding:10px;text-align:left;border-bottom:1px solid #eee;font-weight:600;">Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${participants.map(p => `
+                <tr>
+                  <td style="padding:10px;border-bottom:1px solid #eee;">${p.name}</td>
+                  <td style="padding:10px;border-bottom:1px solid #eee;">${p.role || 'N/A'}</td>
+                  <td style="padding:10px;border-bottom:1px solid #eee;">${p.email || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ` : ''}
+        
+        ${budgetItems.length > 0 ? `
+        <div style="margin-bottom:30px;">
+          <h2 style="color:#0B1F3F;border-bottom:2px solid #E31837;padding-bottom:10px;margin:0 0 15px 0;font-size:20px;">💰 Budget Overview</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Total Estimated</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">$${budgetItems.reduce((s, i) => s + (i.estimatedCost || 0), 0).toLocaleString()}</div>
+            </div>
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Total Spent</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">$${budgetItems.reduce((s, i) => s + (i.actualCost || 0), 0).toLocaleString()}</div>
+            </div>
+            <div style="background:#f8f9fa;padding:12px;border-radius:6px;">
+              <div style="font-size:12px;color:#666;margin-bottom:4px;">Variance</div>
+              <div style="font-size:14px;font-weight:600;color:#333;">$${budgetItems.reduce((s, i) => s + ((i.estimatedCost || 0) - (i.actualCost || 0)), 0).toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+        ` : ''}
+        
+        <div style="text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid #eee;color:#666;font-size:12px;">
+          <p>Generated by PSA BDP Project Management System</p>
+          <p>© ${new Date().getFullYear()} PSA BDP - Global Ocean Freight</p>
         </div>
       </div>
-    </div>
+    `;
     
-    ${latestPsr ? `
-    <div class="section">
-      <h2>📊 Project Health</h2>
-      <div class="health-grid">
-        <div class="health-item ${latestPsr.schedule || 'green'}">
-          <div class="health-dot ${latestPsr.schedule || 'green'}"></div>
-          <div>
-            <div style="font-weight:600;">Schedule</div>
-            <div style="font-size:12px;color:#666;">${latestPsr.scheduleComment || 'On track'}</div>
-          </div>
-        </div>
-        <div class="health-item ${latestPsr.budget || 'green'}">
-          <div class="health-dot ${latestPsr.budget || 'green'}"></div>
-          <div>
-            <div style="font-weight:600;">Budget</div>
-            <div style="font-size:12px;color:#666;">${latestPsr.budgetComment || 'On track'}</div>
-          </div>
-        </div>
-        <div class="health-item ${latestPsr.resources || 'green'}">
-          <div class="health-dot ${latestPsr.resources || 'green'}"></div>
-          <div>
-            <div style="font-weight:600;">Resources</div>
-            <div style="font-size:12px;color:#666;">${latestPsr.resourcesComment || 'On track'}</div>
-          </div>
-        </div>
-        <div class="health-item ${latestPsr.scope || 'green'}">
-          <div class="health-dot ${latestPsr.scope || 'green'}"></div>
-          <div>
-            <div style="font-weight:600;">Scope</div>
-            <div style="font-size:12px;color:#666;">${latestPsr.scopeComment || 'On track'}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    ` : ''}
-    
-    ${openOil.length > 0 ? `
-    <div class="section">
-      <h2>⚠️ Open Items (${openOil.length})</h2>
-      <table>
-        <thead>
-          <tr><th>Description</th><th>Priority</th><th>Assigned To</th><th>Due Date</th></tr>
-        </thead>
-        <tbody>
-          ${openOil.map(item => `
-            <tr>
-              <td>${item.description}</td>
-              <td class="priority-${item.priority}">${item.priority.toUpperCase()}</td>
-              <td>${item.assignedTo || 'Unassigned'}</td>
-              <td>${item.targetDate || 'N/A'}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-    ` : ''}
-    
-    ${participants.length > 0 ? `
-    <div class="section">
-      <h2>👥 Team Members (${participants.length})</h2>
-      <table>
-        <thead>
-          <tr><th>Name</th><th>Role</th><th>Department</th><th>Email</th></tr>
-        </thead>
-        <tbody>
-          ${participants.map(p => `
-            <tr>
-              <td>${p.name}</td>
-              <td>${p.role || 'N/A'}</td>
-              <td>${p.department || 'N/A'}</td>
-              <td>${p.email || 'N/A'}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-    ` : ''}
-    
-    ${budgetItems.length > 0 ? `
-    <div class="section">
-      <h2>💰 Budget Overview</h2>
-      <div class="info-grid" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="info-item">
-          <label>Total Estimated</label>
-          <value>$${budgetItems.reduce((s, i) => s + (i.estimatedCost || 0), 0).toLocaleString()}</value>
-        </div>
-        <div class="info-item">
-          <label>Total Spent</label>
-          <value>$${budgetItems.reduce((s, i) => s + (i.actualCost || 0), 0).toLocaleString()}</value>
-        </div>
-        <div class="info-item">
-          <label>Variance</label>
-          <value>$${budgetItems.reduce((s, i) => s + ((i.estimatedCost || 0) - (i.actualCost || 0)), 0).toLocaleString()}</value>
-        </div>
-      </div>
-    </div>
-    ` : ''}
-    
-    <div class="footer">
-      <p>Generated by PSA BDP Project Management System</p>
-      <p>© ${new Date().getFullYear()} PSA BDP - Global Ocean Freight</p>
-    </div>
-    
-    <div class="no-print" style="text-align:center;margin-top:30px;">
-      <button onclick="window.print()" style="padding:12px 24px;background:#0B1F3F;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">
-        Print / Save as PDF
-      </button>
-    </div>
-  </div>
-</body>
-</html>`;
-    
-    // Open report in new window
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(reportHTML);
-    printWindow.document.close();
+    // Use browser print to PDF
+    setTimeout(() => {
+      const opt = {
+        margin: 10,
+        filename: `Project_Report_${project.name}_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      
+      // Check if html2pdf is loaded, otherwise use simple print
+      if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(tempDiv).save().then(() => {
+          document.body.removeChild(tempDiv);
+        });
+      } else {
+        // Fallback: open print dialog
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Project Report - ${project.name}</title>
+            <style>
+              @media print {
+                body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+              }
+            </style>
+          </head>
+          <body>${tempDiv.innerHTML}</body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        document.body.removeChild(tempDiv);
+      }
+    }, 100);
   }
 };
 
