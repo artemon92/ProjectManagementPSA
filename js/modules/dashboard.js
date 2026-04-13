@@ -154,9 +154,11 @@ const DashboardModule = {
       `;
     }).join('');
     
-    // Update progress bar
+    // Update progress bar and text
     const progress = latest.progress || 0;
     document.getElementById('dash-progress-bar').style.width = progress + '%';
+    const progressText = document.getElementById('dash-progress-text');
+    if (progressText) progressText.textContent = progress + '%';
     
     container.innerHTML = `
       <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:0.5rem;margin-bottom:1rem;">
