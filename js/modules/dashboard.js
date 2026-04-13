@@ -433,41 +433,108 @@ const DashboardModule = {
     
     // Use browser print to PDF
     setTimeout(() => {
-      const opt = {
-        margin: 10,
-        filename: `Project_Report_${project.name}_${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-      
-      // Check if html2pdf is loaded, otherwise use simple print
-      if (typeof html2pdf !== 'undefined') {
-        html2pdf().set(opt).from(tempDiv).save().then(() => {
-          document.body.removeChild(tempDiv);
-        });
-      } else {
-        // Fallback: open print dialog
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Project Report - ${project.name}</title>
-            <style>
-              @media print {
-                body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-              }
-            </style>
-          </head>
-          <body>${tempDiv.innerHTML}</body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-        document.body.removeChild(tempDiv);
+      try {
+        // Try html2pdf first if available
+        if (typeof html2pdf !== 'undefined' && html2pdf().set) {
+          const opt = {
+            margin: 10,
+            filename: `Project_Report_${project.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+          
+          html2pdf().set(opt).from(tempDiv).save()
+            .then(() => {
+              document.body.removeChild(tempDiv);
+              App.toast('PDF descargado correctamente', 'success');
+            })
+            .catch((err) => {
+              console.error('html2pdf error:', err);
+              this.fallbackPrintPDF(tempDiv, project);
+            });
+        } else {
+          // Fallback: use print dialog
+          this.fallbackPrintPDF(tempDiv, project);
+        }
+      } catch (err) {
+        console.error('PDF generation error:', err);
+        this.fallbackPrintPDF(tempDiv, project);
       }
-    }, 100);
+    }, 200);
+  },
+
+  fallbackPrintPDF(tempDiv, project) {
+    // Remove hidden temp div
+    if (tempDiv.parentNode) {
+      document.body.removeChild(tempDiv);
+    }
+    
+    // Create a new window with the content for printing
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!printWindow) {
+      App.toast('El navegador bloqueó la ventana emergente. Permite popups para imprimir.', 'error');
+      return;
+    }
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Project Report - ${project.name}</title>
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 800px; margin: 0 auto; padding: 40px; }
+          .header { background: linear-gradient(135deg, #0B1F3F 0%, #1a3a6e 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; margin: -40px -40px 30px -40px; }
+          .header h1 { font-size: 28px; margin-bottom: 10px; }
+          .header p { color: #00B2E3; font-size: 16px; }
+          .section { margin-bottom: 30px; }
+          .section h2 { color: #0B1F3F; border-bottom: 2px solid #E31837; padding-bottom: 10px; margin-bottom: 15px; font-size: 20px; }
+          .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+          .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; }
+          .info-item label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+          .info-item value { font-size: 14px; font-weight: 600; color: #333; }
+          .health-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .health-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid; }
+          .health-item.green { border-left-color: #10B981; }
+          .health-item.amber { border-left-color: #F59E0B; }
+          .health-item.red { border-left-color: #EF4444; }
+          .health-dot { width: 12px; height: 12px; border-radius: 50%; }
+          .health-dot.green { background: #10B981; }
+          .health-dot.amber { background: #F59E0B; }
+          .health-dot.red { background: #EF4444; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+          th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
+          th { background: #f8f9fa; font-weight: 600; color: #0B1F3F; }
+          .priority-high { color: #EF4444; font-weight: 600; }
+          .priority-medium { color: #F59E0B; font-weight: 600; }
+          .priority-low { color: #10B981; font-weight: 600; }
+          .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; }
+          .print-btn { position: fixed; top: 20px; right: 20px; padding: 12px 24px; background: #0B1F3F; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+          @media print { 
+            .no-print { display: none !important; } 
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-btn { display: none !important; }
+          }
+        </style>
+      </head>
+      <body>
+        <button class="print-btn no-print" onclick="window.print()">📄 Imprimir / Guardar como PDF</button>
+        ${tempDiv.innerHTML}
+        <script>
+          // Auto-print on desktop, but wait for user on mobile
+          if (window.innerWidth > 768) {
+            setTimeout(() => window.print(), 500);
+          }
+        </script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    
+    App.toast('Abriendo ventana de impresión. Guarda como PDF.', 'success');
   }
 };
 

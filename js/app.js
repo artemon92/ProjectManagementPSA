@@ -488,11 +488,36 @@ const App = {
   initModals() {
     document.getElementById('modal-close')?.addEventListener('click', () => this.closeModal());
     document.getElementById('modal-cancel')?.addEventListener('click', () => this.closeModal());
-    document.getElementById('modal-overlay')?.addEventListener('click', (e) => {
-      if (e.target === document.getElementById('modal-overlay')) {
+    
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal');
+    
+    // Prevent clicks inside modal from closing it
+    modal?.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+    
+    // Only close when clicking directly on overlay
+    overlay?.addEventListener('click', (e) => {
+      if (e.target === overlay) {
         this.closeModal();
       }
     });
+    
+    // Handle touch events for mobile
+    let touchStartY = 0;
+    modal?.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    
+    modal?.addEventListener('touchend', (e) => {
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = touchStartY - touchEndY;
+      // Prevent closing when scrolling inside modal (swipe up/down less than 100px)
+      if (Math.abs(diff) < 100) {
+        e.stopPropagation();
+      }
+    }, { passive: true });
   },
 
   openModal(title, content, onConfirm, options = {}) {
@@ -523,9 +548,18 @@ const App = {
     
     lucide.createIcons();
     
-    // Focus first input
-    const firstInput = document.querySelector('#modal-body input, #modal-body textarea, #modal-body select');
-    firstInput?.focus();
+    // Focus first input (but not on mobile to avoid keyboard issues)
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (!isMobile) {
+      const firstInput = document.querySelector('#modal-body input:not([type=number]), #modal-body textarea, #modal-body select');
+      firstInput?.focus();
+    }
+    
+    // Add click prevention to modal body
+    const modalBody = document.getElementById('modal-body');
+    modalBody?.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
   },
 
   closeModal() {
