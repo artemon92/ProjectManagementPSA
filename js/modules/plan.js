@@ -255,16 +255,41 @@ const PlanModule = {
     `;
     
     App.openModal('Nueva Tarea', content, async () => {
-      const name = document.getElementById('task-name').value.trim();
-      const startDate = document.getElementById('task-start').value;
-      const endDate = document.getElementById('task-end').value;
+      const nameInput = document.getElementById('task-name');
+      const startInput = document.getElementById('task-start');
+      const endInput = document.getElementById('task-end');
       
-      if (!name || !startDate || !endDate) {
-        App.toast('Nombre, fecha inicio y fecha fin son obligatorios', 'error');
+      const name = nameInput.value.trim();
+      const startDate = startInput.value;
+      const endDate = endInput.value;
+      
+      // Reset previous error styles
+      nameInput.style.borderColor = '';
+      startInput.style.borderColor = '';
+      endInput.style.borderColor = '';
+      
+      let hasError = false;
+      
+      if (!name) {
+        nameInput.style.borderColor = '#EF4444';
+        hasError = true;
+      }
+      if (!startDate) {
+        startInput.style.borderColor = '#EF4444';
+        hasError = true;
+      }
+      if (!endDate) {
+        endInput.style.borderColor = '#EF4444';
+        hasError = true;
+      }
+      
+      if (hasError) {
+        App.toast('Completa los campos marcados en rojo', 'error');
         return false;
       }
       
       if (new Date(endDate) < new Date(startDate)) {
+        endInput.style.borderColor = '#EF4444';
         App.toast('La fecha fin debe ser posterior a la fecha inicio', 'error');
         return false;
       }
@@ -349,12 +374,36 @@ const PlanModule = {
     `;
     
     App.openModal('Editar Tarea', content, async () => {
-      const name = document.getElementById('task-name').value.trim();
-      const startDate = document.getElementById('task-start').value;
-      const endDate = document.getElementById('task-end').value;
+      const nameInput = document.getElementById('task-name');
+      const startInput = document.getElementById('task-start');
+      const endInput = document.getElementById('task-end');
       
-      if (!name || !startDate || !endDate) {
-        App.toast('Nombre, fecha inicio y fecha fin son obligatorios', 'error');
+      const name = nameInput.value.trim();
+      const startDate = startInput.value;
+      const endDate = endInput.value;
+      
+      // Reset previous error styles
+      nameInput.style.borderColor = '';
+      startInput.style.borderColor = '';
+      endInput.style.borderColor = '';
+      
+      let hasError = false;
+      
+      if (!name) {
+        nameInput.style.borderColor = '#EF4444';
+        hasError = true;
+      }
+      if (!startDate) {
+        startInput.style.borderColor = '#EF4444';
+        hasError = true;
+      }
+      if (!endDate) {
+        endInput.style.borderColor = '#EF4444';
+        hasError = true;
+      }
+      
+      if (hasError) {
+        App.toast('Completa los campos marcados en rojo', 'error');
         return false;
       }
       
