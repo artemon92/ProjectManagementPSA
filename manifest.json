@@ -1,0 +1,22 @@
+{
+  "name": "PSA BDP - Gestión de Proyectos Ocean Freight",
+  "short_name": "PSA Projects",
+  "description": "Gestión de proyectos Global Ocean Freight para PSA BDP",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1F3F",
+  "theme_color": "#0B1F3F",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

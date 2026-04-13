@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <!-- PSA BDP App Icon -->
+  <rect width="192" height="192" fill="#0B1F3F" rx="24"/>
+  <text x="96" y="115" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="white" text-anchor="middle">PSA</text>
+  <rect x="140" y="40" width="24" height="24" fill="#00B2E3" rx="4"/>
+</svg>
