@@ -286,7 +286,7 @@
           </div>
           
           <!-- Latest PSR Summary -->
-          <div class="card">
+          <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-header">
               <h3>Último Project Status Report</h3>
               <button class="btn btn-sm btn-outline" id="btn-view-latest-psr">
@@ -295,6 +295,59 @@
             </div>
             <div class="card-body" id="dash-psr-summary">
               <p style="color:var(--text-tertiary);">No hay PSR registrado aún</p>
+            </div>
+          </div>
+          
+          <!-- Open Items Preview -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3>Open Items Abiertos</h3>
+              <div style="display:flex;gap:0.5rem;">
+                <button class="btn btn-sm btn-outline" id="btn-dash-view-all-oil">
+                  <i data-lucide="list"></i> Ver todos
+                </button>
+                <button class="btn btn-sm btn-primary" id="btn-dash-add-oil">
+                  <i data-lucide="plus"></i> Nuevo
+                </button>
+              </div>
+            </div>
+            <div class="card-body" id="dash-openitems-list" style="display:flex;flex-direction:column;gap:0.5rem;">
+              <p style="color:var(--text-tertiary);">Cargando Open Items...</p>
+            </div>
+          </div>
+          
+          <!-- Vacation Preview -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3>Vacaciones Programadas</h3>
+              <div style="display:flex;gap:0.5rem;">
+                <button class="btn btn-sm btn-outline" id="btn-dash-view-all-vacation">
+                  <i data-lucide="calendar"></i> Ver todas
+                </button>
+                <button class="btn btn-sm btn-primary" id="btn-dash-add-vacation">
+                  <i data-lucide="plus"></i> Registrar
+                </button>
+              </div>
+            </div>
+            <div class="card-body" id="dash-vacation-list" style="display:flex;flex-direction:column;gap:0.5rem;">
+              <p style="color:var(--text-tertiary);">Cargando vacaciones...</p>
+            </div>
+          </div>
+          
+          <!-- PDF Report -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Reporte del Proyecto</h3>
+            </div>
+            <div class="card-body" style="text-align:center; padding: 2rem;">
+              <i data-lucide="file-text" style="width:48px;height:48px;color:var(--primary);margin-bottom:1rem;"></i>
+              <p style="color:var(--text-secondary);margin-bottom:1.5rem;">
+                Genera un reporte completo en PDF con toda la información del proyecto:
+                <br>PSR, Open Items, Participantes, Budget, y más.
+              </p>
+              <button class="btn btn-primary" id="btn-generate-pdf-report">
+                <i data-lucide="download"></i> Descargar Reporte PDF
+              </button>
             </div>
           </div>
         </section>
