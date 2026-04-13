@@ -1521,6 +1521,95 @@ a:hover {
     width: 95%;
     max-height: 95vh;
   }
+  
+  /* Project Selector Mobile */
+  .project-selector {
+    padding: 1rem;
+    justify-content: flex-start;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .project-selector-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .project-selector-header p {
+    font-size: 0.875rem;
+  }
+  
+  .project-selector-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .project-selector-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .project-card {
+    padding: 1rem;
+  }
+  
+  .project-selector .logo img {
+    height: 40px !important;
+  }
+  
+  /* Finance tabs mobile */
+  .sub-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .sub-tabs button {
+    flex: 1;
+    min-width: 100px;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  /* Section actions mobile */
+  .section-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+  
+  .section-actions .btn,
+  .section-actions .form-select {
+    width: 100%;
+    margin-right: 0 !important;
+  }
+  
+  /* Topbar mobile improvements */
+  .topbar-title h1 {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  
+  .topbar-project {
+    font-size: 0.75rem;
+  }
+  
+  /* Table mobile */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .data-table {
+    min-width: 600px;
+  }
 }
 
 /* Print */
