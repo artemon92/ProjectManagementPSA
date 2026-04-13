@@ -5,6 +5,7 @@
 const App = {
   currentProject: null,
   currentSection: 'cover',
+  modules: {},
   
   async init() {
     // Initialize database
@@ -141,16 +142,15 @@ const App = {
     document.querySelectorAll('.nav-link').forEach(link => {
       link.classList.toggle('active', link.dataset.section === section);
     });
-    
-    // Reload section data
-    if (this.modules[section] && this.modules[section].load) {
-      this.modules[section].load();
-    }
 
     // Show section
     document.querySelectorAll('.content-section').forEach(sec => {
-      sec.classList.toggle('active', sec.id === `section-${section}`);
+      sec.classList.remove('active');
     });
+    const targetSection = document.getElementById(`section-${section}`);
+    if (targetSection) {
+      targetSection.classList.add('active');
+    }
 
     // Update title
     const titles = {
@@ -159,14 +159,12 @@ const App = {
       scope: 'Scope & Requisitos',
       kickoff: 'Kick-off Template',
       plan: 'Project Plan',
-      psr: 'Project Status Report',
-      oil: 'Open Item List',
+      psr: 'PSR - Project Status Report',
+      oil: 'Open Items - Action Tracker',
       uat: 'UAT Test Tracker',
       vacation: 'Vacation Coverage',
       participants: 'Participantes',
-      vendors: 'Vendors & Suppliers',
-      budget: 'Project Budget',
-      expenses: 'Project Expenses',
+      finance: 'Cost Management',
       email: 'Email Reporting'
     };
     
@@ -221,14 +219,8 @@ const App = {
       case 'participants':
         ParticipantsModule.load();
         break;
-      case 'vendors':
-        VendorsModule.load();
-        break;
-      case 'budget':
-        BudgetModule.load();
-        break;
-      case 'expenses':
-        ExpensesModule.load();
+      case 'finance':
+        FinanceModule.load();
         break;
       case 'email':
         EmailModule.load();

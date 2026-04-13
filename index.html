@@ -101,7 +101,7 @@
           <li>
             <a href="#oil" class="nav-link" data-section="oil">
               <i data-lucide="alert-circle"></i>
-              <span class="nav-text">OIL</span>
+              <span class="nav-text">Open Items</span>
             </a>
           </li>
           <li>
@@ -123,21 +123,9 @@
             </a>
           </li>
           <li>
-            <a href="#vendors" class="nav-link" data-section="vendors">
-              <i data-lucide="truck"></i>
-              <span class="nav-text">Vendors</span>
-            </a>
-          </li>
-          <li>
-            <a href="#budget" class="nav-link" data-section="budget">
-              <i data-lucide="calculator"></i>
-              <span class="nav-text">Budget</span>
-            </a>
-          </li>
-          <li>
-            <a href="#expenses" class="nav-link" data-section="expenses">
-              <i data-lucide="receipt"></i>
-              <span class="nav-text">Expenses</span>
+            <a href="#finance" class="nav-link" data-section="finance">
+              <i data-lucide="wallet"></i>
+              <span class="nav-text">Cost Management</span>
             </a>
           </li>
           <li>
@@ -1319,115 +1307,35 @@
           </div>
         </section>
 
-        <!-- SECTION: Vendors -->
-        <section id="section-vendors" class="content-section">
+        <!-- SECTION: Finance (Cost Management) -->
+        <section id="section-finance" class="content-section">
           <div class="section-header">
             <div class="section-title">
-              <i data-lucide="truck"></i>
-              <h2>Vendors & Suppliers</h2>
-            </div>
-            <div class="section-actions">
-              <button class="btn btn-primary" id="btn-add-vendor">
-                <i data-lucide="plus"></i> Add Vendor
-              </button>
+              <i data-lucide="wallet"></i>
+              <h2>Cost Management</h2>
             </div>
           </div>
 
-          <!-- Stats Cards -->
-          <div class="grid grid-3" style="margin-bottom: 1.5rem;">
-            <div class="kpi-card">
-              <div class="kpi-icon blue">
-                <i data-lucide="truck"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Total Vendors</div>
-                <div class="kpi-value" id="vendors-total-count">0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon green">
-                <i data-lucide="check-circle"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Active</div>
-                <div class="kpi-value" id="vendors-active-count">0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon amber">
-                <i data-lucide="clock"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Pending</div>
-                <div class="kpi-value" id="vendors-pending-count">0</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Filters -->
+          <!-- Tabs -->
           <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Category</label>
-                  <select class="form-select" id="vendor-filter-category">
-                    <option value="__all__">All Categories</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Status</label>
-                  <select class="form-select" id="vendor-filter-status">
-                    <option value="__all__">All Statuses</option>
-                    <option value="Active">Active</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Inactive">Inactive</option>
-                    <option value="Under Review">Under Review</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Search</label>
-                  <input type="text" class="form-control" id="vendor-search" placeholder="Search vendors...">
-                </div>
+            <div class="card-body" style="padding: 0.75rem;">
+              <div class="sub-tabs" style="display: flex; gap: 0.5rem;">
+                <button class="sub-tab active" data-subtab="budget" onclick="FinanceModule.switchTab('budget')">
+                  <i data-lucide="calculator"></i> Budget
+                </button>
+                <button class="sub-tab" data-subtab="expenses" onclick="FinanceModule.switchTab('expenses')">
+                  <i data-lucide="receipt"></i> Expenses
+                </button>
+                <button class="sub-tab" data-subtab="vendors" onclick="FinanceModule.switchTab('vendors')">
+                  <i data-lucide="truck"></i> Vendors
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Table -->
-          <div class="card">
-            <div class="table-container">
-              <table class="data-table" id="vendors-table">
-                <thead>
-                  <tr>
-                    <th>Vendor Name</th>
-                    <th>Category</th>
-                    <th>Contact</th>
-                    <th>Email / Phone</th>
-                    <th>Services</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="vendors-tbody"></tbody>
-              </table>
-            </div>
-            <div class="empty-state" id="vendors-empty" style="padding: 3rem; text-align: center;">
-              <i data-lucide="truck" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
-              <p style="color: var(--text-tertiary); margin-top: 1rem;">No vendors registered</p>
-              <button class="btn btn-outline" id="btn-add-vendor-empty" style="margin-top: 1rem;">
-                Add first vendor
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION: Budget -->
-        <section id="section-budget" class="content-section">
-          <div class="section-header">
-            <div class="section-title">
-              <i data-lucide="calculator"></i>
-              <h2>Project Budget</h2>
-            </div>
-            <div class="section-actions">
+          <!-- BUDGET TAB -->
+          <div id="finance-tab-budget" class="finance-tab-content active">
+            <div class="section-actions" style="margin-bottom: 1rem;">
               <select class="form-select" id="budget-filter-category" style="width: auto; margin-right: 0.5rem;">
                 <option value="__all__">All Categories</option>
               </select>
@@ -1435,75 +1343,69 @@
                 <i data-lucide="plus"></i> Add Line Item
               </button>
             </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-3" style="margin-bottom: 1.5rem;">
+              <div class="kpi-card">
+                <div class="kpi-icon blue">
+                  <i data-lucide="target"></i>
+                </div>
+                <div class="kpi-content">
+                  <div class="kpi-label">Estimated Budget</div>
+                  <div class="kpi-value" id="budget-total-estimated">$0</div>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon red">
+                  <i data-lucide="dollar-sign"></i>
+                </div>
+                <div class="kpi-content">
+                  <div class="kpi-label">Actual Spent</div>
+                  <div class="kpi-value" id="budget-total-actual">$0</div>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon green">
+                  <i data-lucide="trending-up"></i>
+                </div>
+                <div class="kpi-content">
+                  <div class="kpi-label">Variance</div>
+                  <div class="kpi-value" id="budget-total-variance">$0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+              <div class="table-container">
+                <table class="data-table" id="budget-table">
+                  <thead>
+                    <tr>
+                      <th>Line Item</th>
+                      <th>Vendor</th>
+                      <th>Estimated</th>
+                      <th>Actual</th>
+                      <th>Variance</th>
+                      <th>Progress</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="budget-tbody"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="budget-empty" style="padding: 3rem; text-align: center;">
+                <i data-lucide="calculator" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
+                <p style="color: var(--text-tertiary); margin-top: 1rem;">No budget items defined</p>
+                <button class="btn btn-outline" id="btn-add-budget-empty" style="margin-top: 1rem;">
+                  Add first budget item
+                </button>
+              </div>
+            </div>
           </div>
 
-          <!-- Summary Cards -->
-          <div class="grid grid-3" style="margin-bottom: 1.5rem;">
-            <div class="kpi-card">
-              <div class="kpi-icon blue">
-                <i data-lucide="target"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Estimated Budget</div>
-                <div class="kpi-value" id="budget-total-estimated">$0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon red">
-                <i data-lucide="dollar-sign"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Actual Spent</div>
-                <div class="kpi-value" id="budget-total-actual">$0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon green">
-                <i data-lucide="trending-up"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Variance</div>
-                <div class="kpi-value" id="budget-total-variance">$0</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Table -->
-          <div class="card">
-            <div class="table-container">
-              <table class="data-table" id="budget-table">
-                <thead>
-                  <tr>
-                    <th>Line Item</th>
-                    <th>Vendor</th>
-                    <th>Estimated</th>
-                    <th>Actual</th>
-                    <th>Variance</th>
-                    <th>Progress</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="budget-tbody"></tbody>
-              </table>
-            </div>
-            <div class="empty-state" id="budget-empty" style="padding: 3rem; text-align: center;">
-              <i data-lucide="calculator" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
-              <p style="color: var(--text-tertiary); margin-top: 1rem;">No budget items defined</p>
-              <button class="btn btn-outline" id="btn-add-budget-empty" style="margin-top: 1rem;">
-                Add first budget item
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION: Expenses -->
-        <section id="section-expenses" class="content-section">
-          <div class="section-header">
-            <div class="section-title">
-              <i data-lucide="receipt"></i>
-              <h2>Project Expenses</h2>
-            </div>
-            <div class="section-actions">
+          <!-- EXPENSES TAB -->
+          <div id="finance-tab-expenses" class="finance-tab-content" style="display: none;">
+            <div class="section-actions" style="margin-bottom: 1rem;">
               <select class="form-select" id="expense-filter-category" style="width: auto; margin-right: 0.5rem;">
                 <option value="__all__">All Categories</option>
               </select>
@@ -1514,42 +1416,120 @@
                 <i data-lucide="plus"></i> Add Expense
               </button>
             </div>
-          </div>
 
-          <!-- Summary Card -->
-          <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="card-body" style="display: flex; align-items: center; justify-content: space-between;">
-              <div>
-                <h3 style="margin: 0; font-size: 1.25rem;">Total Expenses</h3>
-                <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary);" id="expenses-count">0 items</p>
+            <!-- Summary Card -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+              <div class="card-body" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <h3 style="margin: 0; font-size: 1.25rem;">Total Expenses</h3>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary);" id="expenses-count">0 items</p>
+                </div>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="expenses-total">$0</div>
               </div>
-              <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="expenses-total">$0</div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+              <div class="table-container">
+                <table class="data-table" id="expenses-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Description</th>
+                      <th>Vendor</th>
+                      <th>Amount</th>
+                      <th>Receipt</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expenses-tbody"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="expenses-empty" style="padding: 3rem; text-align: center;">
+                <i data-lucide="receipt" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
+                <p style="color: var(--text-tertiary); margin-top: 1rem;">No expenses recorded</p>
+                <button class="btn btn-outline" id="btn-add-expense-empty" style="margin-top: 1rem;">
+                  Add first expense
+                </button>
+              </div>
             </div>
           </div>
 
-          <!-- Table -->
-          <div class="card">
-            <div class="table-container">
-              <table class="data-table" id="expenses-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Vendor</th>
-                    <th>Amount</th>
-                    <th>Receipt</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="expenses-tbody"></tbody>
-              </table>
-            </div>
-            <div class="empty-state" id="expenses-empty" style="padding: 3rem; text-align: center;">
-              <i data-lucide="receipt" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
-              <p style="color: var(--text-tertiary); margin-top: 1rem;">No expenses recorded</p>
-              <button class="btn btn-outline" id="btn-add-expense-empty" style="margin-top: 1rem;">
-                Add first expense
+          <!-- VENDORS TAB -->
+          <div id="finance-tab-vendors" class="finance-tab-content" style="display: none;">
+            <div class="section-actions" style="margin-bottom: 1rem;">
+              <select class="form-select" id="vendor-filter-category" style="width: auto; margin-right: 0.5rem;">
+                <option value="__all__">All Categories</option>
+              </select>
+              <select class="form-select" id="vendor-filter-status" style="width: auto; margin-right: 0.5rem;">
+                <option value="__all__">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Under Review">Under Review</option>
+              </select>
+              <input type="text" class="form-control" id="vendor-search" placeholder="Search vendors..." style="width: auto; margin-right: 0.5rem;">
+              <button class="btn btn-primary" id="btn-add-vendor">
+                <i data-lucide="plus"></i> Add Vendor
               </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-3" style="margin-bottom: 1.5rem;">
+              <div class="kpi-card">
+                <div class="kpi-icon blue">
+                  <i data-lucide="truck"></i>
+                </div>
+                <div class="kpi-content">
+                  <div class="kpi-label">Total Vendors</div>
+                  <div class="kpi-value" id="vendors-total-count">0</div>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon green">
+                  <i data-lucide="check-circle"></i>
+                </div>
+                <div class="kpi-content">
+                  <div class="kpi-label">Active</div>
+                  <div class="kpi-value" id="vendors-active-count">0</div>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon amber">
+                  <i data-lucide="clock"></i>
+                </div>
+                <div class="kpi-content">
+                  <div class="kpi-label">Pending</div>
+                  <div class="kpi-value" id="vendors-pending-count">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+              <div class="table-container">
+                <table class="data-table" id="vendors-table">
+                  <thead>
+                    <tr>
+                      <th>Vendor Name</th>
+                      <th>Category</th>
+                      <th>Contact</th>
+                      <th>Email / Phone</th>
+                      <th>Services</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="vendors-tbody"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="vendors-empty" style="padding: 3rem; text-align: center;">
+                <i data-lucide="truck" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
+                <p style="color: var(--text-tertiary); margin-top: 1rem;">No vendors registered</p>
+                <button class="btn btn-outline" id="btn-add-vendor-empty" style="margin-top: 1rem;">
+                  Add first vendor
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -1641,6 +1621,7 @@
   <script src="js/modules/vendors.js"></script>
   <script src="js/modules/budget.js"></script>
   <script src="js/modules/expenses.js"></script>
+  <script src="js/modules/finance.js"></script>
   <script src="js/modules/email.js"></script>
   <script src="js/modules/report.js"></script>
   <script src="js/app.js"></script>
