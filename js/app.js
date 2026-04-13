@@ -536,9 +536,9 @@ const App = {
     confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
     cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
     
-    newConfirm.addEventListener('click', () => {
+    newConfirm.addEventListener('click', async () => {
       if (onConfirm) {
-        const result = onConfirm();
+        const result = await onConfirm();
         // If onConfirm returns false, don't close modal (validation failed)
         if (result === false) {
           return;
