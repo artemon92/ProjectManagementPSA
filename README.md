@@ -9,12 +9,13 @@ Aplicación web progresiva (PWA) para la gestión de proyectos de Global Ocean F
 - **Cover Page**: Información general del proyecto, metadatos, fechas, equipo
 - **Scope**: Gestión de requisitos y alcance (Pre/During/Post-Implementation)
 - **Kick-off Template**: Plantilla estandarizada para iniciar proyectos
-- **Project Plan**: Planificación tipo Gantt con fases, tareas y dependencias
+- **Project Plan**: Planificación tipo Gantt interactivo con drag & drop
 - **PSR (Project Status Report)**: Reporte de estado con KPIs (Schedule, Budget, Resources, Scope, Risks)
 - **OIL (Open Item List)**: Seguimiento de issues y action items
 - **UAT Test Tracker**: Gestión de pruebas de aceptación
 - **Vacation Coverage**: Planificación de ausencias y backups
 - **Participantes**: Directorio de stakeholders internos y externos
+- **JIRA Integration**: Sincronización con JIRA Cloud (Epics, Tasks, Sub-tasks)
 - **Email Reporting**: Generación automática de emails de status semanal
 
 ### Características Técnicas
@@ -32,20 +33,23 @@ Aplicación web progresiva (PWA) para la gestión de proyectos de Global Ocean F
 GestionProyectosPSA/
 ├── index.html              # App shell principal
 ├── css/
-│   └── styles.css          # Estilos con tema claro/oscuro
+│   └── styles.css          # Estilos con tema claro/oscuro + Gantt
 ├── js/
 │   ├── db.js               # Capa IndexedDB (CRUD)
 │   ├── app.js              # Navegación, modales, utilidades
+│   ├── i18n.js             # Sistema de internacionalización ES/EN
 │   └── modules/
 │       ├── cover.js        # Cover Page
 │       ├── scope.js        # Scope & Requisitos
 │       ├── kickoff.js      # Kick-off Template
-│       ├── plan.js         # Project Plan (Gantt)
+│       ├── plan.js         # Project Plan (Gantt interactivo)
 │       ├── psr.js          # Project Status Report
 │       ├── oil.js          # Open Item List
 │       ├── uat.js          # UAT Test Tracker
 │       ├── vacation.js     # Vacation Coverage
 │       ├── participants.js # Participantes
+│       ├── jira-hierarchy.js # JIRA: Epics, Tasks, Sub-tasks
+│       ├── jira-api.js     # JIRA Cloud API integration
 │       ├── email.js        # Email Reporting
 │       └── report.js       # Generación de reportes
 ├── manifest.json           # Web App Manifest (PWA)
@@ -81,6 +85,42 @@ Abre `http://localhost:8080` en tu navegador.
 2. Busca la opción "Instalar" o "Añadir a pantalla de inicio" en el menú del navegador
 3. La app se instalará como aplicación nativa con acceso offline
 
+## Nuevas Funcionalidades
+
+### JIRA Integration
+
+Sincroniza automáticamente tus proyectos de JIRA Cloud:
+
+- **Jerarquía completa**: Epics → Tasks → Sub-tasks
+- **Sincronización bidireccional**: Importa desde JIRA Cloud o CSV
+- **Campos mapeados**: Status, assignee, dates, priority, RAG status, labels
+- **Project Plan sync**: Las tareas de JIRA se añaden automáticamente al Gantt
+
+#### Configuración JIRA
+
+1. Ve a la sección **JIRA** en el menú lateral
+2. Haz clic en ⚙️ **Configuración**
+3. Ingresa:
+   - **URL**: `https://bdpinternational.atlassian.net`
+   - **Email**: Tu email de Atlassian
+   - **API Token**: Crea uno en https://id.atlassian.com/manage-profile/security/api-tokens
+   - **Project Key**: Ej: `GOF` (Global Ocean Freight)
+4. Haz clic en **Save & Test**
+5. Usa el botón **Sync JIRA** para sincronizar
+
+> **Nota**: Para evitar problemas de CORS, usa la extensión "CORS Unblock" para desarrollo local, o importa mediante CSV.
+
+### Gantt Interactivo Mejorado
+
+El Project Plan ahora incluye un Gantt profesional con:
+
+- **Drag & Drop**: Arrastra las barras para mover fechas
+- **Resize**: Arrastra el borde derecho para cambiar duración
+- **Hitos (Milestones)**: Tareas con 100% progreso se muestran como diamantes
+- **Timeline diario**: Vista día a día con fin de semanas marcados
+- **Línea de hoy**: Indicador visual de la fecha actual
+- **Sync con JIRA**: Las tareas importadas desde JIRA aparecen automáticamente
+
 ## Base de Datos
 
 La aplicación utiliza IndexedDB local con las siguientes stores:
@@ -97,6 +137,9 @@ La aplicación utiliza IndexedDB local con las siguientes stores:
 | `uat` | Casos de prueba UAT |
 | `vacation` | Registros de vacaciones |
 | `participants` | Participantes y stakeholders |
+| `epics` | JIRA Epics |
+| `jira_tasks` | JIRA Tasks |
+| `subtasks` | JIRA Sub-tasks |
 
 ## Uso del Flujo de Trabajo
 
@@ -121,10 +164,13 @@ La aplicación utiliza IndexedDB local con las siguientes stores:
 - Establece governance: frecuencia de reporting, meetings, escalation path
 - Usa "Copiar para Email" para notificar stakeholders
 
-### 5. Project Plan
+### 5. Project Plan (Gantt Interactivo)
 - Crea fases (Initiation, Planning, Development, Testing, UAT, Go-Live)
 - Añade tareas con fechas, responsables y dependencias
-- Visualiza el timeline Gantt
+- **Arrastra** las barras del Gantt para cambiar fechas
+- **Redimensiona** desde el borde derecho para ajustar duración
+- Visualiza hitos (milestones) como diamantes
+- Sincroniza automáticamente con tareas de JIRA
 - Guarda el plan inicial como baseline
 
 ### 6. Weekly PSR
@@ -144,7 +190,13 @@ La aplicación utiliza IndexedDB local con las siguientes stores:
 - Asigna testers y registra resultados
 - Track de status: Open, In Progress, Passed, Failed
 
-### 9. Email Reporting
+### 9. JIRA Integration
+- Sincroniza tareas desde JIRA Cloud con un clic
+- Alternativa: Exporta CSV desde JIRA (Issues → Export → CSV)
+- Importa el CSV con el botón "Importar CSV JIRA"
+- Las tareas se añaden automáticamente al Project Plan
+
+### 10. Email Reporting
 - Genera el email semanal automáticamente desde el último PSR
 - Personaliza destinatarios y asunto
 - Copia al portapapeles o abre el cliente de email

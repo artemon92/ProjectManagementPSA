@@ -4,7 +4,7 @@
  */
 
 const DB_NAME = 'PSAProjectsDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3; // Incremented for new JIRA-like stores
 
 const STORES = {
   PROJECTS: 'projects',
@@ -19,7 +19,12 @@ const STORES = {
   PARTICIPANTS: 'participants',
   VENDORS: 'vendors',
   BUDGET: 'budget',
-  EXPENSES: 'expenses'
+  EXPENSES: 'expenses',
+  EMAIL: 'email',
+  // JIRA-like hierarchy
+  EPICS: 'epics',
+  JIRA_TASKS: 'jira_tasks',
+  SUBTASKS: 'subtasks'
 };
 
 class Database {
@@ -131,6 +136,35 @@ class Database {
           expStore.createIndex('projectId', 'projectId', { unique: false });
           expStore.createIndex('category', 'category', { unique: false });
           expStore.createIndex('date', 'date', { unique: false });
+        }
+
+        // JIRA-like Epics
+        if (!db.objectStoreNames.contains(STORES.EPICS)) {
+          const epicStore = db.createObjectStore(STORES.EPICS, { keyPath: 'id', autoIncrement: true });
+          epicStore.createIndex('projectId', 'projectId', { unique: false });
+          epicStore.createIndex('status', 'status', { unique: false });
+          epicStore.createIndex('assignee', 'assignee', { unique: false });
+          epicStore.createIndex('ragStatus', 'ragStatus', { unique: false });
+          epicStore.createIndex('labels', 'labels', { unique: false, multiEntry: true });
+        }
+
+        // JIRA-like Tasks
+        if (!db.objectStoreNames.contains(STORES.JIRA_TASKS)) {
+          const jiraTaskStore = db.createObjectStore(STORES.JIRA_TASKS, { keyPath: 'id', autoIncrement: true });
+          jiraTaskStore.createIndex('projectId', 'projectId', { unique: false });
+          jiraTaskStore.createIndex('epicId', 'epicId', { unique: false });
+          jiraTaskStore.createIndex('status', 'status', { unique: false });
+          jiraTaskStore.createIndex('assignee', 'assignee', { unique: false });
+          jiraTaskStore.createIndex('ragStatus', 'ragStatus', { unique: false });
+        }
+
+        // JIRA-like SubTasks
+        if (!db.objectStoreNames.contains(STORES.SUBTASKS)) {
+          const subtaskStore = db.createObjectStore(STORES.SUBTASKS, { keyPath: 'id', autoIncrement: true });
+          subtaskStore.createIndex('projectId', 'projectId', { unique: false });
+          subtaskStore.createIndex('taskId', 'taskId', { unique: false });
+          subtaskStore.createIndex('status', 'status', { unique: false });
+          subtaskStore.createIndex('assignee', 'assignee', { unique: false });
         }
       };
     });

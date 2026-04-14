@@ -76,21 +76,22 @@ const VendorsModule = {
       
       return `
         <tr>
-          <td><strong>${App.escapeHtml(v.name)}</strong></td>
+          <td>
+            <strong>${App.escapeHtml(v.name)}</strong>
+            ${v.attachments?.length ? `<span class="badge badge-info" style="margin-left:0.5rem;" title="${v.attachments.length} attachment(s)"><i data-lucide="paperclip" style="width:12px;height:12px;vertical-align:middle;"></i> ${v.attachments.length}</span>` : ''}
+          </td>
           <td>${App.escapeHtml(v.category)}</td>
           <td>${App.escapeHtml(v.contactPerson || '-')}</td>
           <td>${App.escapeHtml(v.email || '-')}<br><small>${App.escapeHtml(v.phone || '-')}</small></td>
           <td>${App.escapeHtml(v.services || '-')}</td>
           <td><span class="badge ${statusClass}">${v.status}</span></td>
           <td>
-            <div class="action-btns">
-              <button class="action-btn" onclick="VendorsModule.edit(${v.id})" title="Edit">
-                <i data-lucide="pencil"></i>
-              </button>
-              <button class="action-btn delete" onclick="VendorsModule.delete(${v.id})" title="Delete">
-                <i data-lucide="trash-2"></i>
-              </button>
-            </div>
+            <button class="btn btn-ghost btn-sm" onclick="VendorsModule.edit(${v.id})" title="Editar">
+              <i data-lucide="edit-2"></i>
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="VendorsModule.delete(${v.id})" title="Eliminar">
+              <i data-lucide="trash-2"></i>
+            </button>
           </td>
         </tr>
       `;
@@ -243,8 +244,28 @@ const VendorsModule = {
         <label class="form-label">Notes</label>
         <textarea class="form-textarea" id="vendor-notes" rows="3">${App.escapeHtml(vendor.notes || '')}</textarea>
       </div>
+
+      <!-- Attachments Section -->
+      <div class="form-section" style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+        <h4 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+          <i data-lucide="paperclip"></i> Attachments
+          ${vendor.attachments?.length ? `<span class="badge badge-info">${vendor.attachments.length}</span>` : ''}
+        </h4>
+
+        <!-- Existing Attachments -->
+        <div id="vendor-attachments-list" style="margin-bottom:1rem;">
+          ${this.renderAttachmentsList(vendor)}
+        </div>
+
+        <!-- Add New Attachment -->
+        <div class="form-group" style="margin-bottom:0.5rem;">
+          <label class="form-label">Add New File</label>
+          <input type="file" class="form-control" id="vendor-new-attachment" multiple>
+          <small style="color:var(--text-secondary);">Supported: PDF, Images, Docs (max 10MB each)</small>
+        </div>
+      </div>
     `;
-    
+
     App.openModal('Edit Vendor', content, async () => {
       const name = document.getElementById('vendor-name').value.trim();
       if (!name) {
@@ -252,6 +273,28 @@ const VendorsModule = {
         return false;
       }
       
+      // Process new attachments
+      const newFiles = document.getElementById('vendor-new-attachment')?.files;
+      let attachments = vendor.attachments || [];
+
+      if (newFiles && newFiles.length > 0) {
+        for (const file of newFiles) {
+          if (file.size > 10 * 1024 * 1024) {
+            App.toast(`File ${file.name} too large. Maximum 10MB allowed.`, 'error');
+            return false;
+          }
+          const fileData = await this.fileToBase64(file);
+          attachments.push({
+            id: Date.now() + Math.random().toString(36).substr(2, 9),
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            data: fileData,
+            uploadedAt: new Date().toISOString()
+          });
+        }
+      }
+
       const updated = {
         ...vendor,
         name: name,
@@ -262,9 +305,10 @@ const VendorsModule = {
         services: document.getElementById('vendor-services').value.trim(),
         status: document.getElementById('vendor-status').value,
         notes: document.getElementById('vendor-notes').value.trim(),
+        attachments: attachments,
         updatedAt: new Date().toISOString()
       };
-      
+
       await DB.put(STORES.VENDORS, updated);
       await this.load();
       App.toast('Vendor updated successfully', 'success');
@@ -274,10 +318,81 @@ const VendorsModule = {
   async delete(id) {
     const confirmed = await App.confirm('Are you sure you want to delete this vendor?');
     if (!confirmed) return;
-    
+
     await DB.delete(STORES.VENDORS, id);
     await this.load();
     App.toast('Vendor deleted', 'success');
+  },
+
+  // Attachment handling helpers
+  fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  },
+
+  renderAttachmentsList(vendor) {
+    if (!vendor.attachments || vendor.attachments.length === 0) {
+      return '<p style="color:var(--text-tertiary);font-size:0.875rem;">No attachments yet</p>';
+    }
+
+    return vendor.attachments.map(att => `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--bg-tertiary);border-radius:var(--radius);margin-bottom:0.5rem;">
+        <i data-lucide="file-text" style="color:var(--primary);width:18px;height:18px;"></i>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.875rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${App.escapeHtml(att.name)}</div>
+          <small style="color:var(--text-secondary);">${this.formatFileSize(att.size)} · ${new Date(att.uploadedAt).toLocaleDateString()}</small>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="VendorsModule.downloadAttachment(${vendor.id}, '${att.id}')" title="Download">
+          <i data-lucide="download" style="width:14px;height:14px;"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-ghost" onclick="VendorsModule.removeAttachment(${vendor.id}, '${att.id}')" title="Remove">
+          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--danger);"></i>
+        </button>
+      </div>
+    `).join('');
+  },
+
+  formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  },
+
+  downloadAttachment(vendorId, attachmentId) {
+    const vendor = this.vendors.find(v => v.id === vendorId);
+    if (!vendor || !vendor.attachments) return;
+
+    const att = vendor.attachments.find(a => a.id === attachmentId);
+    if (!att || !att.data) return;
+
+    const link = document.createElement('a');
+    link.href = att.data;
+    link.download = att.name;
+    link.click();
+  },
+
+  async removeAttachment(vendorId, attachmentId) {
+    const confirmed = await App.confirm('Remove this attachment?');
+    if (!confirmed) return;
+
+    const vendor = this.vendors.find(v => v.id === vendorId);
+    if (!vendor || !vendor.attachments) return;
+
+    vendor.attachments = vendor.attachments.filter(a => a.id !== attachmentId);
+    vendor.updatedAt = new Date().toISOString();
+
+    await DB.put(STORES.VENDORS, vendor);
+    await this.load();
+
+    // Refresh modal
+    this.edit(vendorId);
+    App.toast('Attachment removed', 'success');
   }
 };
 

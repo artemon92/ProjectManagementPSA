@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0B1F3F">
   <meta name="description" content="PSA BDP - Gestión de Proyectos Ocean Freight">
-  <title>PSA BDP · Gestión de Proyectos Ocean Freight</title>
+  <title data-i18n="app.title">PSA BDP · Gestión de Proyectos Ocean Freight</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="img/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,16 +20,16 @@
       <div class="logo" style="justify-content:center; margin-bottom:1rem;">
         <img id="project-selector-logo" src="img/logo-psa-bdp.svg" alt="PSA BDP" style="height:60px;max-width:200px;">
       </div>
-      <h1>Gestión de Proyectos Ocean Freight</h1>
-      <p>Selecciona un proyecto o crea uno nuevo</p>
+      <h1 data-i18n="selector.title">Gestión de Proyectos Ocean Freight</h1>
+      <p data-i18n="selector.subtitle">Selecciona un proyecto o crea uno nuevo</p>
     </div>
     
     <div class="project-selector-actions">
       <button class="btn btn-primary" id="btn-new-project">
-        <i data-lucide="plus"></i> Nuevo Proyecto
+        <i data-lucide="plus"></i> <span data-i18n="selector.new_project">Nuevo Proyecto</span>
       </button>
       <button class="btn btn-outline" id="btn-import-project">
-        <i data-lucide="upload"></i> Importar
+        <i data-lucide="upload"></i> <span data-i18n="selector.import">Importar</span>
       </button>
       <button class="btn btn-outline" id="btn-theme-selector">
         <i data-lucide="sun"></i>
@@ -40,8 +40,8 @@
     
     <div class="empty-state" id="projects-empty" style="display:none;">
       <i data-lucide="folder-open"></i>
-      <p>No hay proyectos creados</p>
-      <button class="btn btn-outline" id="btn-new-project-empty">
+      <p data-i18n="selector.empty_title">No hay proyectos creados</p>
+      <button class="btn btn-outline" id="btn-new-project-empty" data-i18n="selector.empty_action">
         Crear primer proyecto
       </button>
     </div>
@@ -65,73 +65,79 @@
           <li>
             <a href="#dashboard" class="nav-link active" data-section="dashboard">
               <i data-lucide="layout-dashboard"></i>
-              <span class="nav-text">Dashboard</span>
+              <span class="nav-text" data-i18n="nav.dashboard">Dashboard</span>
             </a>
           </li>
           <li>
             <a href="#cover" class="nav-link" data-section="cover">
               <i data-lucide="file-text"></i>
-              <span class="nav-text">Cover Page</span>
+              <span class="nav-text" data-i18n="nav.cover">Cover Page</span>
             </a>
           </li>
           <li>
             <a href="#scope" class="nav-link" data-section="scope">
               <i data-lucide="target"></i>
-              <span class="nav-text">Scope</span>
+              <span class="nav-text" data-i18n="nav.scope">Scope</span>
             </a>
           </li>
           <li>
             <a href="#kickoff" class="nav-link" data-section="kickoff">
               <i data-lucide="rocket"></i>
-              <span class="nav-text">Kick-off</span>
+              <span class="nav-text" data-i18n="nav.kickoff">Kick-off</span>
             </a>
           </li>
           <li>
             <a href="#plan" class="nav-link" data-section="plan">
               <i data-lucide="gantt-chart"></i>
-              <span class="nav-text">Project Plan</span>
+              <span class="nav-text" data-i18n="nav.plan">Project Plan</span>
             </a>
           </li>
           <li>
             <a href="#psr" class="nav-link" data-section="psr">
               <i data-lucide="bar-chart-3"></i>
-              <span class="nav-text">PSR</span>
+              <span class="nav-text" data-i18n="nav.psr">PSR</span>
             </a>
           </li>
           <li>
             <a href="#oil" class="nav-link" data-section="oil">
               <i data-lucide="alert-circle"></i>
-              <span class="nav-text">Open Items</span>
+              <span class="nav-text" data-i18n="nav.oil">Open Items</span>
             </a>
           </li>
           <li>
             <a href="#uat" class="nav-link" data-section="uat">
               <i data-lucide="check-circle"></i>
-              <span class="nav-text">UAT Tracker</span>
+              <span class="nav-text" data-i18n="nav.uat">UAT Tracker</span>
             </a>
           </li>
           <li>
             <a href="#vacation" class="nav-link" data-section="vacation">
               <i data-lucide="calendar"></i>
-              <span class="nav-text">Vacation</span>
+              <span class="nav-text" data-i18n="nav.vacation">Vacation</span>
             </a>
           </li>
           <li>
             <a href="#participants" class="nav-link" data-section="participants">
               <i data-lucide="users"></i>
-              <span class="nav-text">Participantes</span>
+              <span class="nav-text" data-i18n="nav.participants">Participantes</span>
             </a>
           </li>
           <li>
             <a href="#finance" class="nav-link" data-section="finance">
               <i data-lucide="wallet"></i>
-              <span class="nav-text">Cost Management</span>
+              <span class="nav-text" data-i18n="nav.finance">Cost Management</span>
+            </a>
+          </li>
+          <li>
+            <a href="#jira" class="nav-link" data-section="jira">
+              <i data-lucide="layers"></i>
+              <span class="nav-text" data-i18n="nav.jira">JIRA</span>
             </a>
           </li>
           <li>
             <a href="#email" class="nav-link" data-section="email">
               <i data-lucide="mail"></i>
-              <span class="nav-text">Email Reporting</span>
+              <span class="nav-text" data-i18n="nav.email">Email Reporting</span>
             </a>
           </li>
         </ul>
@@ -140,11 +146,11 @@
       <div class="sidebar-footer">
         <button class="sidebar-btn" id="btn-back-projects">
           <i data-lucide="arrow-left"></i>
-          <span>Ver proyectos</span>
+          <span data-i18n="nav.back_projects">Ver proyectos</span>
         </button>
         <button class="sidebar-btn" id="btn-theme-toggle" style="margin-top:0.5rem;">
           <i data-lucide="sun"></i>
-          <span>Modo Claro</span>
+          <span data-i18n="selector.theme_toggle">Modo Claro</span>
         </button>
       </div>
     </aside>
@@ -163,17 +169,61 @@
         <div class="topbar-actions">
           <div class="search-box">
             <i data-lucide="search"></i>
-            <input type="text" id="global-search" placeholder="Buscar en el proyecto...">
+            <input type="text" id="global-search" placeholder="Buscar en el proyecto..." data-i18n-placeholder="topbar.search_placeholder">
           </div>
-          <button class="btn btn-outline btn-icon" id="btn-export-project" title="Exportar proyecto">
+          <button class="btn btn-outline btn-icon" id="btn-export-project" title="Exportar proyecto" data-i18n-title="topbar.export">
             <i data-lucide="download"></i>
           </button>
-          <button class="btn btn-outline btn-icon" id="btn-print" title="Imprimir" onclick="window.print()">
+          <button class="btn btn-outline btn-icon" id="btn-print" title="Imprimir" data-i18n-title="topbar.print" onclick="window.print()">
             <i data-lucide="printer"></i>
           </button>
           <button class="btn btn-primary" id="btn-report">
-            <i data-lucide="file-text"></i> Report
+            <i data-lucide="file-text"></i> <span data-i18n="topbar.report">Report</span>
           </button>
+          <!-- Options Menu -->
+          <div class="options-menu-container">
+            <button class="btn btn-outline" id="btn-options" title="Opciones" data-i18n-title="topbar.options">
+              <i data-lucide="settings"></i>
+            </button>
+            <div class="options-dropdown" id="options-dropdown" style="display:none;">
+              <div class="options-dropdown-header">
+                <span data-i18n="options.title">Opciones</span>
+              </div>
+              <!-- Language -->
+              <div class="options-section">
+                <div class="options-section-title" data-i18n="options.language">Idioma</div>
+                <div class="options-buttons">
+                  <button class="option-btn" data-lang="es" onclick="App.setLanguage('es')">
+                    <span class="flag">🇪🇸</span> <span data-i18n="options.language_es">Español</span>
+                  </button>
+                  <button class="option-btn" data-lang="en" onclick="App.setLanguage('en')">
+                    <span class="flag">🇬🇧</span> <span data-i18n="options.language_en">English</span>
+                  </button>
+                </div>
+              </div>
+              <!-- Export -->
+              <div class="options-section">
+                <button class="option-btn full-width" onclick="App.exportAllProjects()">
+                  <i data-lucide="download"></i>
+                  <span data-i18n="options.export_all">Exportar todos los proyectos</span>
+                </button>
+              </div>
+              <!-- Theme -->
+              <div class="options-section">
+                <div class="options-section-title" data-i18n="options.theme">Tema</div>
+                <div class="options-buttons">
+                  <button class="option-btn" onclick="App.toggleTheme()">
+                    <i data-lucide="sun"></i>
+                    <span data-i18n="options.theme_light">Claro</span>
+                  </button>
+                  <button class="option-btn" onclick="App.toggleTheme()">
+                    <i data-lucide="moon"></i>
+                    <span data-i18n="options.theme_dark">Oscuro</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -184,55 +234,90 @@
           <div class="section-header">
             <div class="section-title">
               <i data-lucide="layout-dashboard"></i>
-              <h2>Dashboard del Proyecto</h2>
+              <h2 data-i18n="dashboard.title">Dashboard del Proyecto</h2>
             </div>
           </div>
-          
+
+          <!-- Quick Stats Row -->
+          <div class="grid grid-4" style="margin-bottom: 1.5rem;">
+            <div class="kpi-card" id="kpi-openitems" style="cursor:pointer;">
+              <div class="kpi-icon blue">
+                <i data-lucide="list-checks"></i>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-label" data-i18n="dashboard.open_items">Open Items</div>
+                <div class="kpi-value" id="dash-oil-count">0</div>
+              </div>
+            </div>
+            <div class="kpi-card" id="kpi-priority" style="cursor:pointer;">
+              <div class="kpi-icon amber">
+                <i data-lucide="alert-triangle"></i>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-label" data-i18n="dashboard.high_priority">Alta Prioridad</div>
+                <div class="kpi-value" id="dash-oil-high">0</div>
+              </div>
+            </div>
+            <div class="kpi-card" id="kpi-vacation" style="cursor:pointer;">
+              <div class="kpi-icon purple">
+                <i data-lucide="calendar"></i>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-label" data-i18n="dashboard.vacations">Vacaciones</div>
+                <div class="kpi-value" id="dash-vacation-count">0</div>
+              </div>
+            </div>
+            <div class="kpi-card" id="kpi-uat" style="cursor:pointer;">
+              <div class="kpi-icon green">
+                <i data-lucide="check-circle"></i>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-label" data-i18n="dashboard.uat_tests">UAT Tests</div>
+                <div class="kpi-value" id="dash-uat-count">0</div>
+              </div>
+            </div>
+          </div>
+
           <div class="grid grid-2" style="margin-bottom: 1.5rem;">
             <!-- Project Info Card -->
             <div class="card">
               <div class="card-header">
-                <h3>Información del Proyecto</h3>
+                <h3 data-i18n="dashboard.project_info">Información del Proyecto</h3>
+                <span class="badge badge-neutral" id="dash-status-badge">-</span>
               </div>
               <div class="card-body">
                 <div class="form-group">
-                  <label class="form-label">Nombre</label>
-                  <input type="text" class="form-control" id="dash-project-name" readonly style="background:var(--bg-tertiary);">
+                  <label class="form-label" data-i18n="dashboard.name">Nombre</label>
+                  <input type="text" class="form-control" id="dash-project-name" readonly style="background:var(--bg-tertiary);font-weight:500;">
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label">Código</label>
+                    <label class="form-label" data-i18n="dashboard.code">Código</label>
                     <input type="text" class="form-control" id="dash-project-code" readonly style="background:var(--bg-tertiary);">
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" id="dash-project-status" readonly style="background:var(--bg-tertiary);">
+                    <label class="form-label" data-i18n="dashboard.duration">Duración</label>
+                    <input type="text" class="form-control" id="dash-duration" readonly style="background:var(--bg-tertiary);">
                   </div>
                 </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Progreso</label>
-                    <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;">
-                      <div class="progress-bar" style="flex:1;">
-                        <div class="progress-bar-fill" id="dash-progress-bar" style="width:0%;"></div>
-                      </div>
-                      <span id="dash-progress-text" style="font-size:0.875rem;font-weight:600;color:var(--primary);min-width:40px;">0%</span>
+                <div class="form-group" style="margin-top:0.5rem;">
+                  <label class="form-label" data-i18n="dashboard.progress">Progreso General</label>
+                  <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;">
+                    <div class="progress-bar" style="flex:1;height:12px;">
+                      <div class="progress-bar-fill" id="dash-progress-bar" style="width:0%;"></div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Duración</label>
-                    <input type="text" class="form-control" id="dash-duration" readonly style="background:var(--bg-tertiary);">
+                    <span id="dash-progress-text" style="font-size:1rem;font-weight:700;color:var(--primary);min-width:50px;">0%</span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <!-- Participants Preview Card -->
             <div class="card">
               <div class="card-header">
-                <h3>Participantes del Proyecto</h3>
+                <h3 data-i18n="dashboard.participants">Participantes</h3>
                 <button class="btn btn-sm btn-outline" id="btn-view-all-participants">
-                  <i data-lucide="users"></i> Ver todos
+                  <i data-lucide="users"></i> <span data-i18n="dashboard.view_all">Ver todos</span>
                 </button>
               </div>
               <div class="card-body">
@@ -241,105 +326,65 @@
                 </div>
                 <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
                   <small style="color:var(--text-secondary);">
-                    <span id="dash-participant-count">0</span> participantes registrados
+                    <span data-i18n="dashboard.total_participants" data-i18n-params='{"count":"0"}'>Total: <strong id="dash-participant-count">0</strong> participantes</span>
                   </small>
                 </div>
               </div>
             </div>
           </div>
-          
-          <!-- Quick Stats Row -->
-          <div class="grid grid-4" style="margin-bottom: 1.5rem;">
-            <div class="kpi-card">
-              <div class="kpi-icon blue">
-                <i data-lucide="list-checks"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Open Items</div>
-                <div class="kpi-value" id="dash-oil-count">0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon amber">
-                <i data-lucide="alert-triangle"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">OIL Alta Prioridad</div>
-                <div class="kpi-value" id="dash-oil-high">0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon purple">
-                <i data-lucide="calendar"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">Vacaciones Activas</div>
-                <div class="kpi-value" id="dash-vacation-count">0</div>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon green">
-                <i data-lucide="check-circle"></i>
-              </div>
-              <div class="kpi-content">
-                <div class="kpi-label">UAT Tests</div>
-                <div class="kpi-value" id="dash-uat-count">0</div>
-              </div>
-            </div>
-          </div>
-          
+
           <!-- Latest PSR Summary -->
           <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-header">
-              <h3>Último Project Status Report</h3>
+              <h3 data-i18n="dashboard.psr">Último Project Status Report</h3>
               <button class="btn btn-sm btn-outline" id="btn-view-latest-psr">
-                <i data-lucide="file-text"></i> Ver PSR completo
+                <i data-lucide="file-text"></i> <span data-i18n="dashboard.view_psr">Ver PSR completo</span>
               </button>
             </div>
             <div class="card-body" id="dash-psr-summary">
               <p style="color:var(--text-tertiary);">No hay PSR registrado aún</p>
             </div>
           </div>
-          
-          <!-- Open Items Preview -->
-          <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="card-header">
-              <h3>Open Items</h3>
-              <button class="btn btn-sm btn-outline" id="btn-dash-view-all-oil">
-                <i data-lucide="list"></i> Ver todos
-              </button>
+
+          <!-- Open Items & Vacation Side by Side -->
+          <div class="grid grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+              <div class="card-header">
+                <h3 data-i18n="dashboard.open_items_title">Open Items Abiertos</h3>
+                <button class="btn btn-sm btn-outline" id="btn-dash-view-all-oil">
+                  <i data-lucide="list"></i> <span data-i18n="dashboard.view_all_oil">Ver todos</span>
+                </button>
+              </div>
+              <div class="card-body" id="dash-openitems-list" style="display:flex;flex-direction:column;gap:0.5rem;">
+                <p style="color:var(--text-tertiary);">Cargando Open Items...</p>
+              </div>
             </div>
-            <div class="card-body" id="dash-openitems-list" style="display:flex;flex-direction:column;gap:0.5rem;">
-              <p style="color:var(--text-tertiary);">Cargando Open Items...</p>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 data-i18n="dashboard.vacations_title">Vacaciones Programadas</h3>
+                <button class="btn btn-sm btn-outline" id="btn-dash-view-all-vacation">
+                  <i data-lucide="calendar"></i> <span data-i18n="dashboard.view_all_vacations">Ver todas</span>
+                </button>
+              </div>
+              <div class="card-body" id="dash-vacation-list" style="display:flex;flex-direction:column;gap:0.5rem;">
+                <p style="color:var(--text-tertiary);">Cargando vacaciones...</p>
+              </div>
             </div>
           </div>
-          
-          <!-- Vacation Preview -->
-          <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="card-header">
-              <h3>Vacaciones Programadas</h3>
-              <button class="btn btn-sm btn-outline" id="btn-dash-view-all-vacation">
-                <i data-lucide="calendar"></i> Ver todas
-              </button>
-            </div>
-            <div class="card-body" id="dash-vacation-list" style="display:flex;flex-direction:column;gap:0.5rem;">
-              <p style="color:var(--text-tertiary);">Cargando vacaciones...</p>
-            </div>
-          </div>
-          
-          <!-- PDF Report -->
+
+          <!-- Report Download -->
           <div class="card">
-            <div class="card-header">
-              <h3>Reporte del Proyecto</h3>
-            </div>
-            <div class="card-body" style="text-align:center; padding: 2rem;">
-              <i data-lucide="file-text" style="width:48px;height:48px;color:var(--primary);margin-bottom:1rem;"></i>
-              <p style="color:var(--text-secondary);margin-bottom:1.5rem;">
-                Genera un reporte completo en PDF con toda la información del proyecto:
-                <br>PSR, Open Items, Participantes, Budget, y más.
-              </p>
+            <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:1rem;">
+                <i data-lucide="file-text" style="width:32px;height:32px;color:var(--primary);"></i>
+                <div>
+                  <h4 style="margin:0;font-size:1rem;" data-i18n="dashboard.report_title">Reporte del Proyecto</h4>
+                  <p style="margin:0;font-size:0.875rem;color:var(--text-secondary);" data-i18n="dashboard.report_desc">PSR, Open Items, Participantes, Budget</p>
+                </div>
+              </div>
               <button class="btn btn-primary" id="btn-generate-pdf-report">
-                <i data-lucide="download"></i> Descargar Reporte PDF
+                <i data-lucide="download"></i> <span data-i18n="dashboard.download_pdf">Descargar PDF</span>
               </button>
             </div>
           </div>
@@ -349,54 +394,54 @@
         <section id="section-cover" class="content-section">
           <div class="card">
             <div class="card-header">
-              <h3>Información General del Proyecto</h3>
-              <span class="badge badge-neutral" id="cover-status-badge">En preparación</span>
+              <h3 data-i18n="cover.title">Información General del Proyecto</h3>
+              <span class="badge badge-neutral" id="cover-status-badge" data-i18n="status.draft">En preparación</span>
             </div>
             <div class="card-body">
               <div class="form-section">
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label required">Nombre del Proyecto</label>
-                    <input type="text" class="form-control" id="cover-project-name" placeholder="Ej: Implementación sistema tracking">
+                    <label class="form-label required" data-i18n="cover.project_name">Nombre del Proyecto</label>
+                    <input type="text" class="form-control" id="cover-project-name" placeholder="Ej: Implementación sistema tracking" data-i18n-placeholder="cover.project_name_placeholder">
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Código del Proyecto</label>
-                    <input type="text" class="form-control" id="cover-project-code" placeholder="Ej: PSA-2024-001">
+                    <label class="form-label" data-i18n="cover.project_code">Código del Proyecto</label>
+                    <input type="text" class="form-control" id="cover-project-code" placeholder="Ej: PSA-2024-001" data-i18n-placeholder="cover.project_code_placeholder">
                   </div>
                 </div>
                 <div class="form-row-3">
                   <div class="form-group">
-                    <label class="form-label required">Tipo de Proyecto</label>
+                    <label class="form-label required" data-i18n="cover.project_type">Tipo de Proyecto</label>
                     <select class="form-select" id="cover-project-type">
-                      <option value="">Seleccionar...</option>
-                      <option value="digital">Digitalización</option>
-                      <option value="process">Optimización Procesos</option>
-                      <option value="system">Implementación Sistema</option>
-                      <option value="integration">Integración</option>
-                      <option value="compliance">Compliance/Regulatorio</option>
-                      <option value="expansion">Expansión/Geográfico</option>
-                      <option value="other">Otro</option>
+                      <option value="" data-i18n="action.select">Seleccionar...</option>
+                      <option value="digital" data-i18n="type.digital">Digitalización</option>
+                      <option value="process" data-i18n="type.process">Optimización Procesos</option>
+                      <option value="system" data-i18n="type.system">Implementación Sistema</option>
+                      <option value="integration" data-i18n="type.integration">Integración</option>
+                      <option value="compliance" data-i18n="type.compliance">Compliance/Regulatorio</option>
+                      <option value="expansion" data-i18n="type.expansion">Expansión/Geográfico</option>
+                      <option value="other" data-i18n="type.other">Otro</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label class="form-label required">Región</label>
+                    <label class="form-label required" data-i18n="cover.region">Región</label>
                     <select class="form-select" id="cover-region">
-                      <option value="">Seleccionar...</option>
-                      <option value="global">Global</option>
-                      <option value="europe">Europa</option>
-                      <option value="americas">Américas</option>
-                      <option value="asia">Asia-Pacífico</option>
-                      <option value="mea">Middle East & Africa</option>
+                      <option value="" data-i18n="action.select">Seleccionar...</option>
+                      <option value="global" data-i18n="region.global">Global</option>
+                      <option value="europe" data-i18n="region.europe">Europa</option>
+                      <option value="americas" data-i18n="region.americas">Américas</option>
+                      <option value="asia" data-i18n="region.asia">Asia-Pacífico</option>
+                      <option value="mea" data-i18n="region.mea">Middle East & Africa</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label class="form-label required">Estado</label>
+                    <label class="form-label required" data-i18n="cover.status">Estado</label>
                     <select class="form-select" id="cover-status">
-                      <option value="draft">En preparación</option>
-                      <option value="active">Activo</option>
-                      <option value="on-hold">En pausa</option>
-                      <option value="completed">Completado</option>
-                      <option value="cancelled">Cancelado</option>
+                      <option value="draft" data-i18n="status.draft">En preparación</option>
+                      <option value="active" data-i18n="status.active">Activo</option>
+                      <option value="on-hold" data-i18n="status.on_hold">En pausa</option>
+                      <option value="completed" data-i18n="status.completed">Completado</option>
+                      <option value="cancelled" data-i18n="status.cancelled">Cancelado</option>
                     </select>
                   </div>
                 </div>
@@ -404,19 +449,19 @@
 
               <div class="form-section">
                 <h4 class="form-section-title">
-                  <i data-lucide="calendar"></i> Fechas
+                  <i data-lucide="calendar"></i> <span data-i18n="cover.dates">Fechas</span>
                 </h4>
                 <div class="form-row-3">
                   <div class="form-group">
-                    <label class="form-label required">Fecha de Inicio</label>
+                    <label class="form-label required" data-i18n="cover.start_date">Fecha de Inicio</label>
                     <input type="date" class="form-control" id="cover-start-date">
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Go-Live / Fecha Fin Prevista</label>
+                    <label class="form-label" data-i18n="cover.end_date">Go-Live / Fecha Fin Prevista</label>
                     <input type="date" class="form-control" id="cover-end-date">
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Duración (días)</label>
+                    <label class="form-label" data-i18n="cover.duration">Duración (días)</label>
                     <input type="number" class="form-control" id="cover-duration" readonly>
                   </div>
                 </div>
@@ -424,47 +469,47 @@
 
               <div class="form-section">
                 <h4 class="form-section-title">
-                  <i data-lucide="building-2"></i> Cliente & Business Case
+                  <i data-lucide="building-2"></i> <span data-i18n="cover.customer_bu">Cliente & Business Case</span>
                 </h4>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label">Customer Name</label>
-                    <input type="text" class="form-control" id="cover-customer" placeholder="Nombre del cliente">
+                    <label class="form-label" data-i18n="cover.customer">Customer Name</label>
+                    <input type="text" class="form-control" id="cover-customer" placeholder="Nombre del cliente" data-i18n-placeholder="cover.customer_placeholder">
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Business Unit</label>
+                    <label class="form-label" data-i18n="cover.business_unit">Business Unit</label>
                     <select class="form-select" id="cover-bu">
-                      <option value="ocean-freight">Ocean Freight</option>
-                      <option value="air-freight">Air Freight</option>
-                      <option value="contract-logistics">Contract Logistics</option>
-                      <option value="distribution">Distribution</option>
-                      <option value="supply-chain">Supply Chain Solutions</option>
+                      <option value="ocean-freight" data-i18n="bu.ocean">Ocean Freight</option>
+                      <option value="air-freight" data-i18n="bu.air">Air Freight</option>
+                      <option value="contract-logistics" data-i18n="bu.contract">Contract Logistics</option>
+                      <option value="distribution" data-i18n="bu.distribution">Distribution</option>
+                      <option value="supply-chain" data-i18n="bu.supply">Supply Chain Solutions</option>
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Business Case / Resumen Ejecutivo</label>
-                  <textarea class="form-textarea" id="cover-business-case" rows="4" placeholder="Describe el business case del proyecto..."></textarea>
+                  <label class="form-label" data-i18n="cover.business_case">Business Case / Resumen Ejecutivo</label>
+                  <textarea class="form-textarea" id="cover-business-case" rows="4" placeholder="Describe el business case del proyecto..." data-i18n-placeholder="cover.business_placeholder"></textarea>
                 </div>
               </div>
 
               <div class="form-section">
                 <h4 class="form-section-title">
-                  <i data-lucide="info"></i> Información Adicional
+                  <i data-lucide="info"></i> <span data-i18n="cover.additional_info">Información Adicional</span>
                 </h4>
                 <div class="form-group">
-                  <label class="form-label">Project Summary / Alcance</label>
-                  <textarea class="form-textarea" id="cover-summary" rows="4" placeholder="Resumen del proyecto y alcance general..."></textarea>
+                  <label class="form-label" data-i18n="cover.summary">Project Summary / Alcance</label>
+                  <textarea class="form-textarea" id="cover-summary" rows="4" placeholder="Resumen del proyecto y alcance general..." data-i18n-placeholder="cover.summary_placeholder"></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Notas / Comentarios</label>
-                  <textarea class="form-textarea" id="cover-notes" rows="3" placeholder="Notas adicionales..."></textarea>
+                  <label class="form-label" data-i18n="cover.notes">Notas / Comentarios</label>
+                  <textarea class="form-textarea" id="cover-notes" rows="3" placeholder="Notas adicionales..." data-i18n-placeholder="cover.notes_placeholder"></textarea>
                 </div>
               </div>
             </div>
             <div class="card-footer">
               <button class="btn btn-primary" id="btn-save-cover">
-                <i data-lucide="save"></i> Guardar Cambios
+                <i data-lucide="save"></i> <span data-i18n="action.save_changes">Guardar Cambios</span>
               </button>
             </div>
           </div>
@@ -475,45 +520,45 @@
           <div class="section-header">
             <div class="section-title">
               <i data-lucide="target"></i>
-              <h2>Scope & Requisitos</h2>
+              <h2 data-i18n="scope.title">Scope & Requisitos</h2>
             </div>
             <div class="section-actions">
               <button class="btn btn-outline" id="btn-export-scope">
-                <i data-lucide="download"></i> Exportar
+                <i data-lucide="download"></i> <span data-i18n="action.export">Exportar</span>
               </button>
               <button class="btn btn-primary" id="btn-add-scope-item">
-                <i data-lucide="plus"></i> Añadir Item
+                <i data-lucide="plus"></i> <span data-i18n="scope.add_item">Añadir Item</span>
               </button>
             </div>
           </div>
 
           <div class="filters-bar">
             <div class="filter-group">
-              <label class="filter-label">Fase:</label>
+              <label class="filter-label" data-i18n="scope.filter_phase">Fase:</label>
               <select class="form-select filter-select" id="scope-filter-phase">
-                <option value="all">Todas</option>
-                <option value="pre">Pre-Implementación</option>
-                <option value="during">During Implementation</option>
-                <option value="post">Post-Implementation</option>
+                <option value="all" data-i18n="scope.all">Todas</option>
+                <option value="pre" data-i18n="phase.pre">Pre-Implementación</option>
+                <option value="during" data-i18n="phase.during">During Implementation</option>
+                <option value="post" data-i18n="phase.post">Post-Implementation</option>
               </select>
             </div>
             <div class="filter-group">
-              <label class="filter-label">Prioridad:</label>
+              <label class="filter-label" data-i18n="scope.filter_priority">Prioridad:</label>
               <select class="form-select filter-select" id="scope-filter-priority">
-                <option value="all">Todas</option>
-                <option value="high">Alta</option>
-                <option value="medium">Media</option>
-                <option value="low">Baja</option>
+                <option value="all" data-i18n="scope.all">Todas</option>
+                <option value="high" data-i18n="priority.high">Alta</option>
+                <option value="medium" data-i18n="priority.medium">Media</option>
+                <option value="low" data-i18n="priority.low">Baja</option>
               </select>
             </div>
             <div class="filter-group">
-              <label class="filter-label">Estado:</label>
+              <label class="filter-label" data-i18n="scope.filter_status">Estado:</label>
               <select class="form-select filter-select" id="scope-filter-status">
-                <option value="all">Todos</option>
-                <option value="pending">Pendiente</option>
-                <option value="in-progress">En progreso</option>
-                <option value="completed">Completado</option>
-                <option value="cancelled">Cancelado</option>
+                <option value="all" data-i18n="scope.all">Todos</option>
+                <option value="pending" data-i18n="status.pending">Pendiente</option>
+                <option value="in-progress" data-i18n="status.in_progress">En progreso</option>
+                <option value="completed" data-i18n="status.completed">Completado</option>
+                <option value="cancelled" data-i18n="status.cancelled">Cancelado</option>
               </select>
             </div>
           </div>
@@ -523,13 +568,13 @@
               <table class="data-table" id="scope-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Requisito / Scope Item</th>
-                    <th>Fase</th>
-                    <th>Prioridad</th>
-                    <th>Estado</th>
-                    <th>Comments</th>
-                    <th>Acciones</th>
+                    <th data-i18n="scope.id">ID</th>
+                    <th data-i18n="scope.requirement">Requisito / Scope Item</th>
+                    <th data-i18n="scope.phase">Fase</th>
+                    <th data-i18n="scope.priority">Prioridad</th>
+                    <th data-i18n="scope.status">Estado</th>
+                    <th data-i18n="scope.comments">Comments</th>
+                    <th data-i18n="scope.actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="scope-tbody">
@@ -539,8 +584,8 @@
             </div>
             <div class="empty-state" id="scope-empty" style="padding: 3rem; text-align: center;">
               <i data-lucide="target" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
-              <p style="color: var(--text-tertiary); margin-top: 1rem;">No hay items de scope definidos</p>
-              <button class="btn btn-outline" id="btn-add-scope-empty" style="margin-top: 1rem;">
+              <p style="color: var(--text-tertiary); margin-top: 1rem;" data-i18n="scope.empty">No hay items de scope definidos</p>
+              <button class="btn btn-outline" id="btn-add-scope-empty" style="margin-top: 1rem;" data-i18n="scope.add_first">
                 Añadir primer item
               </button>
             </div>
@@ -552,14 +597,14 @@
           <div class="section-header">
             <div class="section-title">
               <i data-lucide="rocket"></i>
-              <h2>Kick-off Template</h2>
+              <h2 data-i18n="kickoff.title">Kick-off Template</h2>
             </div>
             <div class="section-actions">
               <button class="btn btn-outline" id="btn-copy-kickoff-email">
-                <i data-lucide="copy"></i> Copiar para Email
+                <i data-lucide="copy"></i> <span data-i18n="kickoff.copy_email">Copiar para Email</span>
               </button>
               <button class="btn btn-primary" id="btn-save-kickoff">
-                <i data-lucide="save"></i> Guardar
+                <i data-lucide="save"></i> <span data-i18n="action.save">Guardar</span>
               </button>
             </div>
           </div>
@@ -567,23 +612,23 @@
           <div class="grid grid-2">
             <div class="card">
               <div class="card-header">
-                <h3>Scope & Alcance</h3>
+                <h3 data-i18n="kickoff.scope">Scope & Alcance</h3>
               </div>
               <div class="card-body">
                 <div class="form-group">
-                  <label class="form-label">Métricas Clave (KPIs)</label>
+                  <label class="form-label" data-i18n="kickoff.metrics">Métricas Clave (KPIs)</label>
                   <textarea class="form-textarea" id="kickoff-metrics" rows="3" placeholder="Define las métricas de éxito del proyecto..."></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Fuentes de Datos</label>
+                  <label class="form-label" data-i18n="kickoff.data_sources">Fuentes de Datos</label>
                   <textarea class="form-textarea" id="kickoff-data-sources" rows="3" placeholder="Lista las fuentes de datos involucradas..."></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Lógica de Negocio / Business Rules</label>
+                  <label class="form-label" data-i18n="kickoff.logic">Lógica de Negocio / Business Rules</label>
                   <textarea class="form-textarea" id="kickoff-logic" rows="3" placeholder="Describe la lógica de negocio y reglas..."></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Puntos de Integración</label>
+                  <label class="form-label" data-i18n="kickoff.integration">Puntos de Integración</label>
                   <textarea class="form-textarea" id="kickoff-integration" rows="3" placeholder="Sistemas con los que se integra..."></textarea>
                 </div>
               </div>
@@ -591,29 +636,29 @@
 
             <div class="card">
               <div class="card-header">
-                <h3>Governance & Gestión</h3>
+                <h3 data-i18n="kickoff.governance">Governance & Gestión</h3>
               </div>
               <div class="card-body">
                 <div class="form-group">
-                  <label class="form-label">Frecuencia de Actualización / Reporting</label>
+                  <label class="form-label" data-i18n="kickoff.update_freq">Frecuencia de Actualización / Reporting</label>
                   <select class="form-select" id="kickoff-update-freq">
                     <option value="">Seleccionar...</option>
-                    <option value="daily">Diaria</option>
-                    <option value="weekly">Semanal</option>
-                    <option value="biweekly">Quincenal</option>
-                    <option value="monthly">Mensual</option>
+                    <option value="daily" data-i18n="freq.daily">Diaria</option>
+                    <option value="weekly" data-i18n="freq.weekly">Semanal</option>
+                    <option value="biweekly" data-i18n="freq.biweekly">Quincenal</option>
+                    <option value="monthly" data-i18n="freq.monthly">Mensual</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Reuniones Programadas</label>
+                  <label class="form-label" data-i18n="kickoff.meetings">Reuniones Programadas</label>
                   <textarea class="form-textarea" id="kickoff-meetings" rows="2" placeholder="Ej: Daily standup 9am, Weekly steering committee..."></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Ruta de Escalación / Escalation Path</label>
+                  <label class="form-label" data-i18n="kickoff.escalation">Ruta de Escalación / Escalation Path</label>
                   <textarea class="form-textarea" id="kickoff-escalation" rows="3" placeholder="Define la ruta de escalación para issues..."></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Decision Making / Aprobaciones Requeridas</label>
+                  <label class="form-label" data-i18n="kickoff.decisions">Decision Making / Aprobaciones Requeridas</label>
                   <textarea class="form-textarea" id="kickoff-decisions" rows="2" placeholder="Quién aprueba qué..."></textarea>
                 </div>
               </div>
@@ -622,15 +667,15 @@
 
           <div class="card" style="margin-top: 1.5rem;">
             <div class="card-header">
-              <h3>UI/UX Requirements</h3>
+              <h3 data-i18n="kickoff.ui">UI/UX Requirements</h3>
             </div>
             <div class="card-body">
               <div class="form-group">
-                <label class="form-label">Requisitos de Interfaz / Dashboards</label>
+                <label class="form-label" data-i18n="kickoff.ui_reqs">Requisitos de Interfaz / Dashboards</label>
                 <textarea class="form-textarea" id="kickoff-ui" rows="4" placeholder="Describe los requisitos de UI, dashboards, reportes visuales..."></textarea>
               </div>
               <div class="form-group">
-                <label class="form-label">Usuarios Finales / Stakeholders</label>
+                <label class="form-label" data-i18n="kickoff.users">Usuarios Finales / Stakeholders</label>
                 <textarea class="form-textarea" id="kickoff-users" rows="3" placeholder="Define los usuarios finales y sus necesidades..."></textarea>
               </div>
             </div>
@@ -642,21 +687,21 @@
           <div class="section-header">
             <div class="section-title">
               <i data-lucide="gantt-chart"></i>
-              <h2>Project Plan</h2>
+              <h2 data-i18n="plan.title">Project Plan</h2>
             </div>
             <div class="section-actions">
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
                 <input type="checkbox" id="plan-hide-completed">
-                Ocultar completadas
+                <span data-i18n="plan.hide_completed">Ocultar completadas</span>
               </label>
               <button class="btn btn-outline" id="btn-export-plan">
-                <i data-lucide="download"></i> Exportar CSV
+                <i data-lucide="download"></i> <span data-i18n="plan.export_csv">Exportar CSV</span>
               </button>
               <button class="btn btn-outline" id="btn-save-baseline">
-                <i data-lucide="bookmark"></i> Guardar Plan Inicial
+                <i data-lucide="bookmark"></i> <span data-i18n="plan.save_baseline">Guardar Plan Inicial</span>
               </button>
               <button class="btn btn-primary" id="btn-add-task">
-                <i data-lucide="plus"></i> Nueva Tarea
+                <i data-lucide="plus"></i> <span data-i18n="plan.new_task">Nueva Tarea</span>
               </button>
             </div>
           </div>
@@ -667,7 +712,7 @@
                 <i data-lucide="list-checks"></i>
               </div>
               <div class="kpi-content">
-                <div class="kpi-label">Total Tareas</div>
+                <div class="kpi-label" data-i18n="plan.total_tasks">Total Tareas</div>
                 <div class="kpi-value" id="plan-kpi-total">0</div>
               </div>
             </div>
@@ -676,7 +721,7 @@
                 <i data-lucide="check-circle-2"></i>
               </div>
               <div class="kpi-content">
-                <div class="kpi-label">Completadas</div>
+                <div class="kpi-label" data-i18n="plan.completed">Completadas</div>
                 <div class="kpi-value" id="plan-kpi-completed">0</div>
               </div>
             </div>
@@ -685,7 +730,7 @@
                 <i data-lucide="clock"></i>
               </div>
               <div class="kpi-content">
-                <div class="kpi-label">En Progreso</div>
+                <div class="kpi-label" data-i18n="plan.in_progress">En Progreso</div>
                 <div class="kpi-value" id="plan-kpi-progress">0</div>
               </div>
             </div>
@@ -694,7 +739,7 @@
                 <i data-lucide="alert-triangle"></i>
               </div>
               <div class="kpi-content">
-                <div class="kpi-label">Retrasadas</div>
+                <div class="kpi-label" data-i18n="plan.delayed">Retrasadas</div>
                 <div class="kpi-value" id="plan-kpi-delayed">0</div>
               </div>
             </div>
@@ -710,22 +755,22 @@
 
           <div class="card" style="margin-top: 1.5rem;">
             <div class="card-header">
-              <h3>Lista de Tareas</h3>
+              <h3 data-i18n="plan.task_list">Lista de Tareas</h3>
             </div>
             <div class="card-body">
               <div class="table-container">
                 <table class="data-table" id="tasks-table">
                   <thead>
                     <tr>
-                      <th>Fase</th>
-                      <th>Tarea</th>
-                      <th>Responsable</th>
-                      <th>Inicio</th>
-                      <th>Fin</th>
-                      <th>Progreso</th>
-                      <th>Estado</th>
-                      <th>Dependencias</th>
-                      <th>Acciones</th>
+                      <th data-i18n="plan.phase">Fase</th>
+                      <th data-i18n="plan.task">Tarea</th>
+                      <th data-i18n="plan.assignee">Responsable</th>
+                      <th data-i18n="plan.start">Inicio</th>
+                      <th data-i18n="plan.end">Fin</th>
+                      <th data-i18n="plan.progress">Progreso</th>
+                      <th data-i18n="plan.status">Estado</th>
+                      <th data-i18n="plan.dependencies">Dependencias</th>
+                      <th data-i18n="plan.actions">Acciones</th>
                     </tr>
                   </thead>
                   <tbody id="tasks-tbody">
@@ -735,8 +780,8 @@
               </div>
               <div class="empty-state" id="tasks-empty" style="padding: 2rem; text-align: center;">
                 <i data-lucide="gantt-chart" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
-                <p style="color: var(--text-tertiary); margin-top: 1rem;">No hay tareas en el plan</p>
-                <button class="btn btn-outline" id="btn-add-task-empty" style="margin-top: 1rem;">
+                <p style="color: var(--text-tertiary); margin-top: 1rem;" data-i18n="plan.empty">No hay tareas en el plan</p>
+                <button class="btn btn-outline" id="btn-add-task-empty" style="margin-top: 1rem;" data-i18n="plan.create_first">
                   Crear primera tarea
                 </button>
               </div>
@@ -749,20 +794,20 @@
           <div class="section-header">
             <div class="section-title">
               <i data-lucide="bar-chart-3"></i>
-              <h2>Project Status Report (PSR)</h2>
+              <h2 data-i18n="psr.title">Project Status Report (PSR)</h2>
             </div>
             <div class="section-actions">
               <button class="btn btn-outline" id="btn-view-psr-history">
-                <i data-lucide="history"></i> Historial
+                <i data-lucide="history"></i> <span data-i18n="psr.history">Historial</span>
               </button>
               <button class="btn btn-outline" id="btn-export-psr">
-                <i data-lucide="download"></i> Exportar
+                <i data-lucide="download"></i> <span data-i18n="action.export">Exportar</span>
               </button>
               <button class="btn btn-outline" id="btn-generate-psr-email">
-                <i data-lucide="mail"></i> Generar Email
+                <i data-lucide="mail"></i> <span data-i18n="psr.email">Generar Email</span>
               </button>
               <button class="btn btn-primary" id="btn-update-psr">
-                <i data-lucide="save"></i> Guardar PSR
+                <i data-lucide="save"></i> <span data-i18n="psr.save">Guardar PSR</span>
               </button>
             </div>
           </div>
@@ -772,17 +817,17 @@
             <div class="card-body">
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">Semana del Reporte</label>
+                  <label class="form-label" data-i18n="psr.week">Semana del Reporte</label>
                   <select class="form-select" id="psr-week-selector">
-                    <option value="new">+ Nueva Semana</option>
+                    <option value="new" data-i18n="psr.new_week">+ Nueva Semana</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Fecha del Reporte</label>
+                  <label class="form-label" data-i18n="psr.report_date">Fecha del Reporte</label>
                   <input type="date" class="form-control" id="psr-report-date">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Project Links (JIRA, etc.)</label>
+                  <label class="form-label" data-i18n="psr.links">Project Links (JIRA, etc.)</label>
                   <input type="text" class="form-control" id="psr-links" placeholder="https://jira.company.com/...">
                 </div>
               </div>
@@ -792,11 +837,11 @@
           <div class="grid grid-2">
             <div class="card">
               <div class="card-header">
-                <h3>Overall Project Health</h3>
+                <h3 data-i18n="psr.health">Overall Project Health</h3>
               </div>
               <div class="card-body">
                 <div class="form-group">
-                  <label class="form-label">Progreso General (%)</label>
+                  <label class="form-label" data-i18n="psr.progress">Progreso General (%)</label>
                   <div class="progress-bar" style="margin-top: 0.5rem;">
                     <div class="progress-bar-fill" id="psr-progress-bar" style="width: 0%;"></div>
                   </div>
@@ -1365,18 +1410,21 @@
             </div>
           </div>
 
-          <!-- Tabs -->
+          <!-- Tabs Navigation -->
           <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-body" style="padding: 0.75rem;">
-              <div class="sub-tabs" style="display: flex; gap: 0.5rem;">
+              <div class="sub-tabs">
                 <button class="sub-tab active" data-subtab="budget" onclick="FinanceModule.switchTab('budget')">
-                  <i data-lucide="calculator"></i> Budget
+                  <i data-lucide="calculator"></i>
+                  <span>Budget</span>
                 </button>
                 <button class="sub-tab" data-subtab="expenses" onclick="FinanceModule.switchTab('expenses')">
-                  <i data-lucide="receipt"></i> Expenses
+                  <i data-lucide="receipt"></i>
+                  <span>Expenses</span>
                 </button>
                 <button class="sub-tab" data-subtab="vendors" onclick="FinanceModule.switchTab('vendors')">
-                  <i data-lucide="truck"></i> Vendors
+                  <i data-lucide="truck"></i>
+                  <span>Vendors</span>
                 </button>
               </div>
             </div>
@@ -1384,18 +1432,9 @@
 
           <!-- BUDGET TAB -->
           <div id="finance-tab-budget" class="finance-tab-content active">
-            <div class="section-actions" style="margin-bottom: 1rem;">
-              <select class="form-select" id="budget-filter-category" style="width: auto; margin-right: 0.5rem;">
-                <option value="__all__">All Categories</option>
-              </select>
-              <button class="btn btn-primary" id="btn-add-budget">
-                <i data-lucide="plus"></i> Add Line Item
-              </button>
-            </div>
-
-            <!-- Summary Cards -->
+            <!-- KPI Cards -->
             <div class="grid grid-3" style="margin-bottom: 1.5rem;">
-              <div class="kpi-card">
+              <div class="kpi-card" style="cursor: default;">
                 <div class="kpi-icon blue">
                   <i data-lucide="target"></i>
                 </div>
@@ -1404,7 +1443,7 @@
                   <div class="kpi-value" id="budget-total-estimated">$0</div>
                 </div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card" style="cursor: default;">
                 <div class="kpi-icon red">
                   <i data-lucide="dollar-sign"></i>
                 </div>
@@ -1413,7 +1452,7 @@
                   <div class="kpi-value" id="budget-total-actual">$0</div>
                 </div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card" style="cursor: default;">
                 <div class="kpi-icon green">
                   <i data-lucide="trending-up"></i>
                 </div>
@@ -1421,6 +1460,28 @@
                   <div class="kpi-label">Variance</div>
                   <div class="kpi-value" id="budget-total-variance">$0</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Filters & Actions Bar -->
+            <div class="filters-bar" style="margin-bottom: 1.5rem;">
+              <div class="filter-group">
+                <label class="filter-label">Category:</label>
+                <select class="form-select filter-select" id="budget-filter-category">
+                  <option value="__all__">All Categories</option>
+                </select>
+              </div>
+              <div class="search-box" style="flex: 1; max-width: 300px;">
+                <i data-lucide="search"></i>
+                <input type="text" id="budget-search" placeholder="Search budget items...">
+              </div>
+              <div class="section-actions" style="margin-left: auto;">
+                <button class="btn btn-outline" id="btn-export-budget">
+                  <i data-lucide="download"></i> Export
+                </button>
+                <button class="btn btn-primary" id="btn-add-budget">
+                  <i data-lucide="plus"></i> Add Item
+                </button>
               </div>
             </div>
 
@@ -1454,18 +1515,6 @@
 
           <!-- EXPENSES TAB -->
           <div id="finance-tab-expenses" class="finance-tab-content" style="display: none;">
-            <div class="section-actions" style="margin-bottom: 1rem;">
-              <select class="form-select" id="expense-filter-category" style="width: auto; margin-right: 0.5rem;">
-                <option value="__all__">All Categories</option>
-              </select>
-              <select class="form-select" id="expense-filter-month" style="width: auto; margin-right: 0.5rem;">
-                <option value="__all__">All Months</option>
-              </select>
-              <button class="btn btn-primary" id="btn-add-expense">
-                <i data-lucide="plus"></i> Add Expense
-              </button>
-            </div>
-
             <!-- Summary Card -->
             <div class="card" style="margin-bottom: 1.5rem;">
               <div class="card-body" style="display: flex; align-items: center; justify-content: space-between;">
@@ -1474,6 +1523,34 @@
                   <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary);" id="expenses-count">0 items</p>
                 </div>
                 <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="expenses-total">$0</div>
+              </div>
+            </div>
+
+            <!-- Filters & Actions Bar -->
+            <div class="filters-bar" style="margin-bottom: 1.5rem;">
+              <div class="filter-group">
+                <label class="filter-label">Category:</label>
+                <select class="form-select filter-select" id="expense-filter-category">
+                  <option value="__all__">All Categories</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Month:</label>
+                <select class="form-select filter-select" id="expense-filter-month">
+                  <option value="__all__">All Months</option>
+                </select>
+              </div>
+              <div class="search-box" style="flex: 1; max-width: 300px;">
+                <i data-lucide="search"></i>
+                <input type="text" id="expense-search" placeholder="Search expenses...">
+              </div>
+              <div class="section-actions" style="margin-left: auto;">
+                <button class="btn btn-outline" id="btn-export-expenses">
+                  <i data-lucide="download"></i> Export
+                </button>
+                <button class="btn btn-primary" id="btn-add-expense">
+                  <i data-lucide="plus"></i> Add Expense
+                </button>
               </div>
             </div>
 
@@ -1506,26 +1583,9 @@
 
           <!-- VENDORS TAB -->
           <div id="finance-tab-vendors" class="finance-tab-content" style="display: none;">
-            <div class="section-actions" style="margin-bottom: 1rem;">
-              <select class="form-select" id="vendor-filter-category" style="width: auto; margin-right: 0.5rem;">
-                <option value="__all__">All Categories</option>
-              </select>
-              <select class="form-select" id="vendor-filter-status" style="width: auto; margin-right: 0.5rem;">
-                <option value="__all__">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Pending">Pending</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Under Review">Under Review</option>
-              </select>
-              <input type="text" class="form-control" id="vendor-search" placeholder="Search vendors..." style="width: auto; margin-right: 0.5rem;">
-              <button class="btn btn-primary" id="btn-add-vendor">
-                <i data-lucide="plus"></i> Add Vendor
-              </button>
-            </div>
-
-            <!-- Stats Cards -->
+            <!-- KPI Cards -->
             <div class="grid grid-3" style="margin-bottom: 1.5rem;">
-              <div class="kpi-card">
+              <div class="kpi-card" style="cursor: default;">
                 <div class="kpi-icon blue">
                   <i data-lucide="truck"></i>
                 </div>
@@ -1534,7 +1594,7 @@
                   <div class="kpi-value" id="vendors-total-count">0</div>
                 </div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card" style="cursor: default;">
                 <div class="kpi-icon green">
                   <i data-lucide="check-circle"></i>
                 </div>
@@ -1543,7 +1603,7 @@
                   <div class="kpi-value" id="vendors-active-count">0</div>
                 </div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card" style="cursor: default;">
                 <div class="kpi-icon amber">
                   <i data-lucide="clock"></i>
                 </div>
@@ -1551,6 +1611,38 @@
                   <div class="kpi-label">Pending</div>
                   <div class="kpi-value" id="vendors-pending-count">0</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Filters & Actions Bar -->
+            <div class="filters-bar" style="margin-bottom: 1.5rem;">
+              <div class="filter-group">
+                <label class="filter-label">Category:</label>
+                <select class="form-select filter-select" id="vendor-filter-category">
+                  <option value="__all__">All Categories</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Status:</label>
+                <select class="form-select filter-select" id="vendor-filter-status">
+                  <option value="__all__">All Statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Under Review">Under Review</option>
+                </select>
+              </div>
+              <div class="search-box" style="flex: 1; max-width: 300px;">
+                <i data-lucide="search"></i>
+                <input type="text" id="vendor-search" placeholder="Search vendors...">
+              </div>
+              <div class="section-actions" style="margin-left: auto;">
+                <button class="btn btn-outline" id="btn-export-vendors">
+                  <i data-lucide="download"></i> Export
+                </button>
+                <button class="btn btn-primary" id="btn-add-vendor">
+                  <i data-lucide="plus"></i> Add Vendor
+                </button>
               </div>
             </div>
 
@@ -1579,6 +1671,69 @@
                   Add first vendor
                 </button>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: JIRA Epics -->
+        <section id="section-jira" class="content-section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="layers"></i>
+              <h2 data-i18n="jira.epics">Epics</h2>
+            </div>
+            <div class="section-actions">
+              <input type="file" id="jira-csv-input" accept=".csv" style="display:none;">
+              <button class="btn btn-outline" id="btn-config-jira" title="Configurar conexión JIRA">
+                <i data-lucide="settings"></i>
+              </button>
+              <button class="btn btn-outline" id="btn-sync-jira" title="Sincronizar con JIRA">
+                <i data-lucide="refresh-cw"></i> <span data-i18n="jira.sync">Sync JIRA</span>
+              </button>
+              <button class="btn btn-outline" id="btn-import-jira">
+                <i data-lucide="upload"></i> <span data-i18n="action.import">Importar CSV JIRA</span>
+              </button>
+              <button class="btn btn-primary" id="btn-add-epic">
+                <i data-lucide="plus"></i> <span data-i18n="jira.new_epic">Nuevo Epic</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-container">
+              <table class="data-table" id="epics-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="jira.summary">Summary</th>
+                    <th data-i18n="jira.assignee">Assignee</th>
+                    <th data-i18n="jira.rag_status">RAG</th>
+                    <th data-i18n="jira.status">Status</th>
+                    <th data-i18n="plan.progress">Progress</th>
+                    <th data-i18n="psr.report_date">Target Date</th>
+                    <th data-i18n="scope.actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="epics-tbody">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+            <div class="empty-state" id="epics-empty" style="padding: 3rem; text-align: center;">
+              <i data-lucide="layers" style="width: 48px; height: 48px; color: var(--text-tertiary);"></i>
+              <p style="color: var(--text-tertiary); margin-top: 1rem;" data-i18n="jira.no_epics">No hay Epics definidos</p>
+              <button class="btn btn-outline" id="btn-add-epic-empty" style="margin-top: 1rem;" data-i18n="jira.add_epic">
+                Añadir Epic
+              </button>
+            </div>
+          </div>
+
+          <!-- Tasks Panel (shown when Epic is selected) -->
+          <div class="card" id="tasks-panel" style="margin-top: 1.5rem; display: none;">
+            <div class="card-header">
+              <h3 data-i18n="jira.tasks">Tasks</h3>
+            </div>
+            <div class="card-body" id="tasks-container">
+              <!-- Dynamic content -->
             </div>
           </div>
         </section>
@@ -1672,8 +1827,11 @@
   <script src="js/modules/expenses.js"></script>
   <script src="js/modules/finance.js"></script>
   <script src="js/modules/email.js"></script>
+  <script src="js/modules/jira-hierarchy.js"></script>
+  <script src="js/modules/jira-api.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="js/modules/report.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

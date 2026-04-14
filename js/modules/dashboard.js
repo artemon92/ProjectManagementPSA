@@ -18,25 +18,37 @@ const DashboardModule = {
   renderProjectInfo() {
     const p = App.currentProject;
     const cover = App.modules.cover?.data || {};
-    
+
     document.getElementById('dash-project-name').value = p.name || '';
     document.getElementById('dash-project-code').value = p.code || '';
-    
+
     const statusLabels = {
-      draft: 'En preparación',
-      active: 'Activo',
-      'on-hold': 'En pausa',
-      completed: 'Completado',
-      cancelled: 'Cancelado'
+      draft: I18n.t('status.draft'),
+      active: I18n.t('status.active'),
+      'on-hold': I18n.t('status.on_hold'),
+      completed: I18n.t('status.completed'),
+      cancelled: I18n.t('status.cancelled')
     };
-    document.getElementById('dash-project-status').value = statusLabels[p.status] || p.status || '';
-    
+    const statusBadge = document.getElementById('dash-status-badge');
+    if (statusBadge) {
+      statusBadge.textContent = statusLabels[p.status] || p.status || '-';
+      // Update badge color based on status
+      const statusClasses = {
+        draft: 'badge-neutral',
+        active: 'badge-success',
+        'on-hold': 'badge-warning',
+        completed: 'badge-success',
+        cancelled: 'badge-danger'
+      };
+      statusBadge.className = 'badge ' + (statusClasses[p.status] || 'badge-neutral');
+    }
+
     // Calculate duration
     const start = cover.startDate || p.startDate;
     const end = cover.endDate || p.endDate;
     const duration = App.daysBetween(start, end);
-    document.getElementById('dash-duration').value = duration > 0 ? duration + ' días' : 'N/A';
-    
+    document.getElementById('dash-duration').value = duration > 0 ? duration + ' ' + I18n.t('days') : 'N/A';
+
     // Progress will be set by renderPSRSummary or calculated from tasks
   },
 
@@ -47,7 +59,7 @@ const DashboardModule = {
     document.getElementById('dash-participant-count').textContent = participants.length;
     
     if (participants.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-tertiary);">No hay participantes registrados</p>';
+      container.innerHTML = `<p style="color:var(--text-tertiary);">${I18n.t('participants.empty')}</p>`;
       return;
     }
     
@@ -67,7 +79,7 @@ const DashboardModule = {
           </div>
           <div style="display:flex;flex-direction:column;">
             <span style="font-size:0.875rem;font-weight:500;">${App.escapeHtml(p.name)}</span>
-            <span style="font-size:0.75rem;color:var(--text-secondary);">${App.escapeHtml(p.role || 'Sin rol')}</span>
+            <span style="font-size:0.75rem;color:var(--text-secondary);">${App.escapeHtml(p.role || I18n.t('participants.no_role'))}</span>
           </div>
         </div>
       `;
@@ -75,7 +87,7 @@ const DashboardModule = {
     
     if (remaining > 0) {
       html += `<div style="display:flex;align-items:center;justify-content:center;padding:0.5rem 0.75rem;background:var(--bg-tertiary);border-radius:var(--radius);">
-        <span style="font-size:0.875rem;color:var(--text-secondary);">+${remaining} más...</span>
+        <span style="font-size:0.875rem;color:var(--text-secondary);">+${remaining} ${I18n.t('more')}...</span>
       </div>`;
     }
     
@@ -122,7 +134,7 @@ const DashboardModule = {
     const container = document.getElementById('dash-psr-summary');
     
     if (psrs.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-tertiary);">No hay PSR registrado aún</p>';
+      container.innerHTML = `<p style="color:var(--text-tertiary);">${I18n.t('dashboard.no_psr')}</p>`;
       return;
     }
     
@@ -137,11 +149,11 @@ const DashboardModule = {
     
     const metrics = ['schedule', 'budget', 'resources', 'scope', 'risks'];
     const metricLabels = {
-      schedule: 'Schedule',
-      budget: 'Budget',
-      resources: 'Resources',
-      scope: 'Scope',
-      risks: 'Risks'
+      schedule: I18n.t('psr.schedule'),
+      budget: I18n.t('psr.budget'),
+      resources: I18n.t('psr.resources'),
+      scope: I18n.t('psr.scope_psr'),
+      risks: I18n.t('psr.risks')
     };
     
     let healthHtml = metrics.map(m => {
@@ -166,11 +178,11 @@ const DashboardModule = {
       </div>
       <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:1rem;">
         <div>
-          <small style="color:var(--text-secondary);">Progreso</small>
+          <small style="color:var(--text-secondary);">${I18n.t('dashboard.progress')}</small>
           <div style="font-size:1.25rem;font-weight:600;">${progress}%</div>
         </div>
         <div>
-          <small style="color:var(--text-secondary);">Fecha Reporte</small>
+          <small style="color:var(--text-secondary);">${I18n.t('psr.report_date')}</small>
           <div style="font-size:1rem;">${latest.reportDate || 'N/A'}</div>
         </div>
       </div>
@@ -185,7 +197,7 @@ const DashboardModule = {
     const openItems = oilItems.filter(i => i.status !== 'completed').slice(0, 5); // Show first 5
     
     if (openItems.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-tertiary);">No hay Open Items abiertos</p>';
+      container.innerHTML = `<p style="color:var(--text-tertiary);">${I18n.t('oil.empty')}</p>`;
       return;
     }
     
@@ -224,14 +236,14 @@ const DashboardModule = {
       .slice(0, 5);
     
     if (relevantVacations.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-tertiary);">No hay vacaciones programadas</p>';
+      container.innerHTML = `<p style="color:var(--text-tertiary);">${I18n.t('vacation.empty')}</p>`;
       return;
     }
     
     const html = relevantVacations.map(v => {
       const isActive = v.startDate <= today && v.endDate >= today;
       const statusColor = isActive ? '#10B981' : '#F59E0B';
-      const statusText = isActive ? 'Activa' : 'Próxima';
+      const statusText = isActive ? I18n.t('vacation.active') : I18n.t('vacation.upcoming');
       
       return `
         <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--bg-tertiary);border-radius:var(--radius);border-left:3px solid ${statusColor};">
@@ -253,25 +265,43 @@ const DashboardModule = {
   },
 
   bindEvents() {
-    // Fix: use App.navigateTo instead of App.navigateToSection
+    // Navigation to participants
     document.getElementById('btn-view-all-participants')?.addEventListener('click', () => {
       App.navigateTo('participants');
     });
-    
+
+    // Navigation to PSR
     document.getElementById('btn-view-latest-psr')?.addEventListener('click', () => {
       App.navigateTo('psr');
     });
-    
-    // Open Items button
+
+    // Open Items - view all
     document.getElementById('btn-dash-view-all-oil')?.addEventListener('click', () => {
       App.navigateTo('oil');
     });
-    
-    // Vacation button
+
+    // Vacation - view all
     document.getElementById('btn-dash-view-all-vacation')?.addEventListener('click', () => {
       App.navigateTo('vacation');
     });
-    
+
+    // KPI Cards - clickable navigation
+    document.getElementById('kpi-openitems')?.addEventListener('click', () => {
+      App.navigateTo('oil');
+    });
+
+    document.getElementById('kpi-priority')?.addEventListener('click', () => {
+      App.navigateTo('oil');
+    });
+
+    document.getElementById('kpi-vacation')?.addEventListener('click', () => {
+      App.navigateTo('vacation');
+    });
+
+    document.getElementById('kpi-uat')?.addEventListener('click', () => {
+      App.navigateTo('uat');
+    });
+
     // PDF Report button
     document.getElementById('btn-generate-pdf-report')?.addEventListener('click', () => {
       this.generatePDFReport();
@@ -439,7 +469,7 @@ const DashboardModule = {
           html2pdf().set(opt).from(tempDiv).save()
             .then(() => {
               document.body.removeChild(tempDiv);
-              App.toast('PDF descargado correctamente', 'success');
+              App.toast(I18n.t('toast.pdf_downloaded'), 'success');
             })
             .catch((err) => {
               console.error('html2pdf error:', err);
@@ -465,7 +495,7 @@ const DashboardModule = {
     // Create a new window with the content for printing
     const printWindow = window.open('', '_blank', 'width=800,height=600');
     if (!printWindow) {
-      App.toast('El navegador bloqueó la ventana emergente. Permite popups para imprimir.', 'error');
+      App.toast(I18n.t('toast.popup_blocked'), 'error');
       return;
     }
     
@@ -513,7 +543,7 @@ const DashboardModule = {
         </style>
       </head>
       <body>
-        <button class="print-btn no-print" onclick="window.print()">📄 Imprimir / Guardar como PDF</button>
+        <button class="print-btn no-print" onclick="window.print()">📄 ${I18n.t('print_save_pdf')}</button>
         ${tempDiv.innerHTML}
         <script>
           // Auto-print on desktop, but wait for user on mobile
@@ -526,7 +556,7 @@ const DashboardModule = {
     `);
     printWindow.document.close();
     
-    App.toast('Abriendo ventana de impresión. Guarda como PDF.', 'success');
+    App.toast(I18n.t('toast.print_opened'), 'success');
   }
 };
 

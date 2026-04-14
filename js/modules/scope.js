@@ -31,22 +31,22 @@ const ScopeModule = {
     empty.style.display = 'none';
     
     const phaseLabels = {
-      pre: 'Pre-Impl',
-      during: 'During',
-      post: 'Post-Impl'
+      pre: I18n.t('phase.pre').split(' ')[0], // 'Pre-Implementation' -> 'Pre'
+      during: I18n.t('phase.during').split(' ')[0], // 'During Implementation' -> 'During'
+      post: I18n.t('phase.post').split(' ')[0] // 'Post-Implementation' -> 'Post'
     };
     
     const priorityLabels = {
-      high: { text: 'Alta', class: 'priority-high' },
-      medium: { text: 'Media', class: 'priority-medium' },
-      low: { text: 'Baja', class: 'priority-low' }
+      high: { text: I18n.t('priority.high'), class: 'priority-high' },
+      medium: { text: I18n.t('priority.medium'), class: 'priority-medium' },
+      low: { text: I18n.t('priority.low'), class: 'priority-low' }
     };
     
     const statusLabels = {
-      pending: { text: 'Pendiente', class: 'badge-neutral' },
-      'in-progress': { text: 'En progreso', class: 'badge-warning' },
-      completed: { text: 'Completado', class: 'badge-success' },
-      cancelled: { text: 'Cancelado', class: 'badge-danger' }
+      pending: { text: I18n.t('status.pending') || 'Pendiente', class: 'badge-neutral' },
+      'in-progress': { text: I18n.t('status.in_progress') || 'En progreso', class: 'badge-warning' },
+      completed: { text: I18n.t('status.completed'), class: 'badge-success' },
+      cancelled: { text: I18n.t('status.cancelled'), class: 'badge-danger' }
     };
     
     tbody.innerHTML = filtered.map((item, index) => {
@@ -66,10 +66,10 @@ const ScopeModule = {
           <td><span class="badge ${status.class}">${status.text}</span></td>
           <td>${App.escapeHtml(item.comments || '-')}</td>
           <td>
-            <button class="btn btn-ghost btn-sm" onclick="ScopeModule.edit(${item.id})" title="Editar">
+            <button class="btn btn-ghost btn-sm" onclick="ScopeModule.edit(${item.id})" title="${I18n.t('action.edit')}">
               <i data-lucide="edit-2"></i>
             </button>
-            <button class="btn btn-ghost btn-sm" onclick="ScopeModule.delete(${item.id})" title="Eliminar">
+            <button class="btn btn-ghost btn-sm" onclick="ScopeModule.delete(${item.id})" title="${I18n.t('action.delete')}">
               <i data-lucide="trash-2"></i>
             </button>
           </td>

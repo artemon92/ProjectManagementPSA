@@ -38,14 +38,14 @@ const ExpensesModule = {
     // Get unique categories from expenses
     const categories = ['__all__', ...new Set(this.expenses.map(e => e.category).filter(Boolean).sort())];
     catSelect.innerHTML = categories.map(c => 
-      `<option value="${c}">${c === '__all__' ? 'All Categories' : c}</option>`
+      `<option value="${c}">${c === '__all__' ? I18n.t('expenses.all_categories') : c}</option>`
     ).join('');
     catSelect.value = this.filterCategory;
     
     // Get unique months
     const months = ['__all__', ...new Set(this.expenses.map(e => (e.date || '').slice(0, 7)).filter(Boolean).sort().reverse())];
     monthSelect.innerHTML = months.map(m => 
-      `<option value="${m}">${m === '__all__' ? 'All Months' : this.formatMonth(m)}</option>`
+      `<option value="${m}">${m === '__all__' ? I18n.t('expenses.all_months') : this.formatMonth(m)}</option>`
     ).join('');
     monthSelect.value = this.filterMonth;
   },
@@ -66,7 +66,7 @@ const ExpensesModule = {
     // Calculate totals
     const totalAmount = filtered.reduce((sum, e) => sum + (e.amount || 0), 0);
     document.getElementById('expenses-total').textContent = this.formatCurrency(totalAmount);
-    document.getElementById('expenses-count').textContent = `${filtered.length} items`;
+    document.getElementById('expenses-count').textContent = I18n.t('expenses.items', {count: filtered.length});
     
     if (filtered.length === 0) {
       table.parentElement.style.display = 'none';
@@ -84,19 +84,23 @@ const ExpensesModule = {
         <td>${App.escapeHtml(e.vendor || '-')}</td>
         <td class="text-right font-medium">${this.formatCurrency(e.amount)}</td>
         <td>
-          <span class="badge ${e.receipt ? 'badge-success' : 'badge-neutral'}">
-            ${e.receipt ? 'Receipt ✓' : 'No Receipt'}
-          </span>
+          ${e.receiptData ? `
+            <button class="btn btn-sm btn-outline" onclick="ExpensesModule.downloadReceipt(${e.id})" title="${I18n.t('expenses.download_receipt')}">
+              <i data-lucide="file-text" style="width:14px;height:14px;"></i> ${I18n.t('expenses.receipt')}
+            </button>
+          ` : `
+            <span class="badge ${e.receipt ? 'badge-success' : 'badge-neutral'}">
+              ${e.receipt ? I18n.t('expenses.receipt_yes') : I18n.t('expenses.receipt_no')}
+            </span>
+          `}
         </td>
         <td>
-          <div class="action-btns">
-            <button class="action-btn" onclick="ExpensesModule.edit(${e.id})" title="Edit">
-              <i data-lucide="pencil"></i>
-            </button>
-            <button class="action-btn delete" onclick="ExpensesModule.delete(${e.id})" title="Delete">
-              <i data-lucide="trash-2"></i>
-            </button>
-          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ExpensesModule.edit(${e.id})" title="${I18n.t('action.edit')}">
+            <i data-lucide="edit-2"></i>
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="ExpensesModule.delete(${e.id})" title="${I18n.t('action.delete')}">
+            <i data-lucide="trash-2"></i>
+          </button>
         </td>
       </tr>
     `).join('');
@@ -158,16 +162,21 @@ const ExpensesModule = {
       </div>
       <div class="form-group">
         <label class="form-label">
-          <input type="checkbox" id="expense-receipt" style="margin-right:8px;">
+          <input type="checkbox" id="expense-receipt" style="margin-right:8px;" onchange="ExpensesModule.toggleReceiptUpload('add')">
           Receipt available
         </label>
+      </div>
+      <div class="form-group" id="receipt-upload-container" style="display:none;">
+        <label class="form-label">Attach Receipt</label>
+        <input type="file" class="form-control" id="expense-receipt-file" accept="image/*,.pdf">
+        <small style="color:var(--text-secondary);">Supported: Images, PDF (max 5MB)</small>
       </div>
       <div class="form-group">
         <label class="form-label">Notes</label>
         <textarea class="form-textarea" id="expense-notes" rows="2" placeholder="Additional details..."></textarea>
       </div>
     `;
-    
+
     App.openModal('Add Expense', content, async () => {
       const date = document.getElementById('expense-date').value;
       const amount = parseFloat(document.getElementById('expense-amount').value) || 0;
@@ -178,6 +187,18 @@ const ExpensesModule = {
         return false;
       }
       
+      const receiptChecked = document.getElementById('expense-receipt').checked;
+      const receiptFile = document.getElementById('expense-receipt-file').files[0];
+
+      let receiptData = null;
+      if (receiptChecked && receiptFile) {
+        if (receiptFile.size > 5 * 1024 * 1024) {
+          App.toast('File too large. Maximum 5MB allowed.', 'error');
+          return false;
+        }
+        receiptData = await this.fileToBase64(receiptFile);
+      }
+
       const expense = {
         projectId: App.currentProject.id,
         date: date,
@@ -185,14 +206,16 @@ const ExpensesModule = {
         description: description,
         category: document.getElementById('expense-category').value,
         vendor: document.getElementById('expense-vendor').value.trim(),
-        receipt: document.getElementById('expense-receipt').checked,
+        receipt: receiptChecked,
+        receiptFileName: receiptFile?.name || null,
+        receiptData: receiptData,
         notes: document.getElementById('expense-notes').value.trim(),
         createdAt: new Date().toISOString()
       };
-      
+
       await DB.add(STORES.EXPENSES, expense);
       await this.load();
-      App.toast('Expense added', 'success');
+      App.toast(I18n.t('expenses.added'), 'success');
     });
   },
 
@@ -229,16 +252,36 @@ const ExpensesModule = {
       </div>
       <div class="form-group">
         <label class="form-label">
-          <input type="checkbox" id="expense-receipt" ${expense.receipt ? 'checked' : ''} style="margin-right:8px;">
+          <input type="checkbox" id="expense-receipt" ${expense.receipt ? 'checked' : ''} style="margin-right:8px;" onchange="ExpensesModule.toggleReceiptUpload('edit')">
           Receipt available
         </label>
+      </div>
+      ${expense.receiptData ? `
+      <div class="form-group" id="current-receipt-container">
+        <label class="form-label">Current Receipt</label>
+        <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--bg-tertiary);border-radius:var(--radius);">
+          <i data-lucide="file-text" style="color:var(--primary);"></i>
+          <span style="flex:1;">${App.escapeHtml(expense.receiptFileName || 'receipt')}</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="ExpensesModule.downloadReceipt(${expense.id})">
+            <i data-lucide="download"></i> Download
+          </button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="ExpensesModule.removeReceipt(${expense.id})" title="Remove">
+            <i data-lucide="trash-2" style="color:var(--danger);"></i>
+          </button>
+        </div>
+      </div>
+      ` : ''}
+      <div class="form-group" id="receipt-upload-container-edit" style="display:${expense.receipt && !expense.receiptData ? 'block' : 'none'};">
+        <label class="form-label">${expense.receiptData ? 'Replace Receipt' : 'Attach Receipt'}</label>
+        <input type="file" class="form-control" id="expense-receipt-file" accept="image/*,.pdf">
+        <small style="color:var(--text-secondary);">Supported: Images, PDF (max 5MB)</small>
       </div>
       <div class="form-group">
         <label class="form-label">Notes</label>
         <textarea class="form-textarea" id="expense-notes" rows="2">${App.escapeHtml(expense.notes || '')}</textarea>
       </div>
     `;
-    
+
     App.openModal('Edit Expense', content, async () => {
       const date = document.getElementById('expense-date').value;
       const amount = parseFloat(document.getElementById('expense-amount').value) || 0;
@@ -249,6 +292,21 @@ const ExpensesModule = {
         return false;
       }
       
+      const receiptChecked = document.getElementById('expense-receipt').checked;
+      const receiptFile = document.getElementById('expense-receipt-file')?.files[0];
+
+      let receiptData = expense.receiptData;
+      let receiptFileName = expense.receiptFileName;
+
+      if (receiptFile) {
+        if (receiptFile.size > 5 * 1024 * 1024) {
+          App.toast('File too large. Maximum 5MB allowed.', 'error');
+          return false;
+        }
+        receiptData = await this.fileToBase64(receiptFile);
+        receiptFileName = receiptFile.name;
+      }
+
       const updated = {
         ...expense,
         date: date,
@@ -256,28 +314,78 @@ const ExpensesModule = {
         description: description,
         category: document.getElementById('expense-category').value,
         vendor: document.getElementById('expense-vendor').value.trim(),
-        receipt: document.getElementById('expense-receipt').checked,
+        receipt: receiptChecked,
+        receiptFileName: receiptFileName,
+        receiptData: receiptData,
         notes: document.getElementById('expense-notes').value.trim(),
         updatedAt: new Date().toISOString()
       };
-      
+
       await DB.put(STORES.EXPENSES, updated);
       await this.load();
-      App.toast('Expense updated', 'success');
+      App.toast(I18n.t('expenses.updated'), 'success');
     });
   },
 
   async delete(id) {
-    const confirmed = await App.confirm('Are you sure you want to delete this expense?');
+    const confirmed = await App.confirm(I18n.t('expenses.confirm_delete'));
     if (!confirmed) return;
     
     await DB.delete(STORES.EXPENSES, id);
     await this.load();
-    App.toast('Expense deleted', 'success');
+    App.toast(I18n.t('expenses.deleted'), 'success');
   },
 
   formatCurrency(value) {
     return (value || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  },
+
+  // File handling helpers
+  fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  },
+
+  toggleReceiptUpload(mode) {
+    const checkbox = document.getElementById('expense-receipt');
+    const containerId = mode === 'add' ? 'receipt-upload-container' : 'receipt-upload-container-edit';
+    const container = document.getElementById(containerId);
+    if (container) {
+      container.style.display = checkbox.checked ? 'block' : 'none';
+    }
+  },
+
+  downloadReceipt(id) {
+    const expense = this.expenses.find(e => e.id === id);
+    if (!expense || !expense.receiptData) return;
+
+    const link = document.createElement('a');
+    link.href = expense.receiptData;
+    link.download = expense.receiptFileName || 'receipt';
+    link.click();
+  },
+
+  async removeReceipt(id) {
+    const confirmed = await App.confirm(I18n.t('expenses.confirm_remove_receipt'));
+    if (!confirmed) return;
+
+    const expense = this.expenses.find(e => e.id === id);
+    if (!expense) return;
+
+    expense.receiptData = null;
+    expense.receiptFileName = null;
+    expense.updatedAt = new Date().toISOString();
+
+    await DB.put(STORES.EXPENSES, expense);
+    await this.load();
+
+    // Refresh modal
+    this.edit(id);
+    App.toast(I18n.t('expenses.receipt_removed'), 'success');
   }
 };
 

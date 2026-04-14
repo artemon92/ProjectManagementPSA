@@ -1010,6 +1010,295 @@ a:hover {
   filter: brightness(1.1);
 }
 
+/* Interactive Gantt - New Styles */
+.gantt-wrapper {
+  display: flex;
+  height: 500px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+}
+
+.gantt-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-secondary);
+  overflow-y: auto;
+}
+
+.gantt-phase-header {
+  padding: 0.5rem 1rem;
+  background: var(--bg-tertiary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.gantt-task-row {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.gantt-task-row:hover {
+  background: var(--bg-hover);
+}
+
+.gantt-task-row.milestone {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+}
+
+.gantt-task-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gantt-task-name .milestone-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.gantt-task-meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.task-assignee {
+  color: var(--text-secondary);
+}
+
+.gantt-timeline-wrapper {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.gantt-timeline-scroll {
+  position: relative;
+  min-height: 100%;
+}
+
+.gantt-timeline-header {
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.gantt-month {
+  position: absolute;
+  top: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.gantt-day-header {
+  position: absolute;
+  top: 28px;
+  width: 40px;
+  text-align: center;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.gantt-day-header.weekend {
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+}
+
+.gantt-day-header .day-number {
+  font-weight: 600;
+}
+
+.gantt-day-header .day-name {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.gantt-timeline-body {
+  position: relative;
+  min-height: calc(100% - 60px);
+  padding-top: 1px;
+}
+
+.gantt-grid-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  border-right: 1px solid var(--border-light);
+  pointer-events: none;
+}
+
+.gantt-grid-line.weekend {
+  background: rgba(241, 245, 249, 0.3);
+}
+
+.gantt-today-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--danger);
+  z-index: 8;
+  pointer-events: none;
+}
+
+.gantt-today-line::before {
+  content: 'Hoy';
+  position: absolute;
+  top: -20px;
+  left: -15px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--danger);
+  background: var(--bg-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.gantt-phase-spacer {
+  height: 33px;
+  border-bottom: 1px solid var(--border);
+}
+
+.gantt-bar-container {
+  position: absolute;
+  height: 32px;
+  margin-top: 0.5px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.gantt-bar-container.dragging {
+  z-index: 100;
+  opacity: 0.8;
+}
+
+.gantt-bar-container.resizing {
+  z-index: 100;
+}
+
+.gantt-bar {
+  height: 24px;
+  border-radius: var(--radius-sm);
+  border: 2px solid;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  flex: 1;
+  min-width: 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.gantt-bar:active {
+  cursor: grabbing;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: scaleY(1.1);
+}
+
+.gantt-bar-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.3);
+  pointer-events: none;
+}
+
+.gantt-bar-label {
+  position: relative;
+  z-index: 2;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.gantt-bar-resize-handle {
+  width: 8px;
+  height: 24px;
+  cursor: col-resize;
+  position: absolute;
+  right: 0;
+  top: 4px;
+  border-radius: 0 4px 4px 0;
+}
+
+.gantt-bar-resize-handle::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 2px;
+}
+
+.gantt-milestone {
+  position: absolute;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 5;
+}
+
+.milestone-diamond {
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  border: 2px solid;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.milestone-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
 /* KPI Cards */
 .kpi-grid {
   display: grid;
@@ -1378,6 +1667,48 @@ a:hover {
   color: var(--danger);
 }
 
+/* Sub-tabs (Finance/Cost Management) */
+.sub-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-tertiary);
+  padding: 0.375rem;
+  border-radius: var(--radius-lg);
+}
+
+.sub-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.sub-tab:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.sub-tab.active {
+  background: var(--bg-elevated);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.sub-tab i {
+  width: 18px;
+  height: 18px;
+}
+
 /* Priority Indicators */
 .priority {
   display: inline-flex;
@@ -1566,13 +1897,19 @@ a:hover {
   /* Finance tabs mobile */
   .sub-tabs {
     flex-wrap: wrap;
+    padding: 0.25rem;
   }
-  
-  .sub-tabs button {
+
+  .sub-tab {
     flex: 1;
-    min-width: 100px;
+    min-width: 80px;
     font-size: 0.75rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .sub-tab i {
+    width: 14px;
+    height: 14px;
   }
   
   /* Section actions mobile */
@@ -1647,6 +1984,116 @@ a:hover {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
+}
+
+/* Options Menu Dropdown */
+.options-menu-container {
+  position: relative;
+}
+
+.options-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  min-width: 280px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  padding: 0.75rem;
+}
+
+.options-dropdown-header {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.75rem;
+}
+
+.options-dropdown-header span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.options-section {
+  margin-bottom: 1rem;
+}
+
+.options-section:last-child {
+  margin-bottom: 0;
+}
+
+.options-section-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.options-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.option-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.option-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary-light);
+}
+
+.option-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.option-btn.full-width {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.option-btn .flag {
+  font-size: 1rem;
+}
+
+.option-btn i {
+  width: 16px;
+  height: 16px;
+}
+
+/* Options menu open state */
+.options-menu-container.open .options-dropdown {
+  display: block !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .options-dropdown {
+    position: fixed;
+    top: 64px;
+    left: 1rem;
+    right: 1rem;
+    min-width: auto;
+  }
 }
 
 /* Utilities */

@@ -22,7 +22,7 @@ const OilModule = {
     const select = document.getElementById('oil-filter-assignee');
     
     // Keep "All" option
-    select.innerHTML = '<option value="all">Todos</option>';
+    select.innerHTML = `<option value="all">${I18n.t('oil.all')}</option>`;
     assignees.forEach(a => {
       select.innerHTML += `<option value="${App.escapeHtml(a)}">${App.escapeHtml(a)}</option>`;
     });
@@ -44,17 +44,17 @@ const OilModule = {
     empty.style.display = 'none';
     
     const priorityConfig = {
-      critical: { class: 'badge-danger', label: 'Crítica' },
-      high: { class: 'badge-warning', label: 'Alta' },
-      medium: { class: 'badge-info', label: 'Media' },
-      low: { class: 'badge-neutral', label: 'Baja' }
+      critical: { class: 'badge-danger', label: I18n.t('priority.critical') },
+      high: { class: 'badge-warning', label: I18n.t('priority.high') },
+      medium: { class: 'badge-info', label: I18n.t('priority.medium') },
+      low: { class: 'badge-neutral', label: I18n.t('priority.low') }
     };
     
     const statusConfig = {
-      open: { class: 'badge-neutral', label: 'Open' },
-      'in-progress': { class: 'badge-warning', label: 'In Progress' },
-      'on-hold': { class: 'badge-info', label: 'On Hold' },
-      completed: { class: 'badge-success', label: 'Completed' }
+      open: { class: 'badge-neutral', label: I18n.t('oil.open') },
+      'in-progress': { class: 'badge-warning', label: I18n.t('oil.in_progress') },
+      'on-hold': { class: 'badge-info', label: I18n.t('oil.on_hold') },
+      completed: { class: 'badge-success', label: I18n.t('oil.completed') }
     };
     
     tbody.innerHTML = filtered.map((item, index) => {
@@ -72,10 +72,10 @@ const OilModule = {
           <td><span class="badge ${status.class}">${status.label}</span></td>
           <td>${App.escapeHtml(item.comments || '-')}</td>
           <td>
-            <button class="btn btn-ghost btn-sm" onclick="OilModule.edit(${item.id})" title="Editar">
+            <button class="btn btn-ghost btn-sm" onclick="OilModule.edit(${item.id})" title="${I18n.t('action.edit')}">
               <i data-lucide="edit-2"></i>
             </button>
-            <button class="btn btn-ghost btn-sm" onclick="OilModule.delete(${item.id})" title="Eliminar">
+            <button class="btn btn-ghost btn-sm" onclick="OilModule.delete(${item.id})" title="${I18n.t('action.delete')}">
               <i data-lucide="trash-2"></i>
             </button>
           </td>

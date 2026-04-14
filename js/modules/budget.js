@@ -82,23 +82,21 @@ const BudgetModule = {
           <td class="text-right ${varianceClass}">
             <i data-lucide="${varianceIcon}" style="width:14px;height:14px;vertical-align:middle;"></i>
             ${Math.abs(variance).toLocaleString('en-US', {style:'currency',currency:'USD'})}
-            <br><small>(${variance >= 0 ? 'Under' : 'Over'} ${Math.abs(variancePct)}%)</small>
+            <br><small>(${variance >= 0 ? I18n.t('budget.under') : I18n.t('budget.over')} ${Math.abs(variancePct)}%)</small>
           </td>
           <td>
             <div class="progress-bar" style="height:8px;margin-bottom:4px;">
               <div class="progress-bar-fill ${variance >= 0 ? 'bg-success' : 'bg-danger'}" style="width:${Math.min(100, (item.actualCost || 0) / (item.estimatedCost || 1) * 100)}%"></div>
             </div>
-            <small>${Math.round(((item.actualCost || 0) / (item.estimatedCost || 1)) * 100)}% spent</small>
+            <small>${Math.round(((item.actualCost || 0) / (item.estimatedCost || 1)) * 100)}% ${I18n.t('budget.spent')}</small>
           </td>
           <td>
-            <div class="action-btns">
-              <button class="action-btn" onclick="BudgetModule.edit(${item.id})" title="Edit">
-                <i data-lucide="pencil"></i>
-              </button>
-              <button class="action-btn delete" onclick="BudgetModule.delete(${item.id})" title="Delete">
-                <i data-lucide="trash-2"></i>
-              </button>
-            </div>
+            <button class="btn btn-ghost btn-sm" onclick="BudgetModule.edit(${item.id})" title="${I18n.t('action.edit')}">
+              <i data-lucide="edit-2"></i>
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="BudgetModule.delete(${item.id})" title="${I18n.t('action.delete')}">
+              <i data-lucide="trash-2"></i>
+            </button>
           </td>
         </tr>
       `;

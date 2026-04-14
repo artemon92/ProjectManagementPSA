@@ -10,24 +10,28 @@ const App = {
   async init() {
     // Initialize database
     await DB.init();
-    
+
+    // Initialize i18n FIRST (before any UI rendering)
+    I18n.init();
+
     // Initialize UI
     this.initTheme();
     this.initNavigation();
     this.initModals();
     this.initProjectSelector();
     this.initGlobalSearch();
-    
+    this.initOptions();
+
     // Show changelog if new version
     this.showChangelogIfNeeded();
-    
+
     // Show project selector
     this.showProjectSelector();
-    
+
     // Register service worker
     this.registerSW();
-    
-    console.log('App initialized');
+
+    console.log('App initialized, current language:', I18n.getCurrentLang());
   },
 
   // Theme management
@@ -37,8 +41,8 @@ const App = {
     
     // Set initial icon based on theme
     const icon = savedTheme === 'light' ? 'sun' : 'moon';
-    const label = savedTheme === 'light' ? 'Modo Oscuro' : 'Modo Claro';
-    
+    const label = I18n.t('selector.theme_toggle');
+
     // Update project selector theme button
     const selectorBtn = document.getElementById('btn-theme-selector');
     if (selectorBtn) {
@@ -66,29 +70,29 @@ const App = {
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    
+
     // Update theme toggle buttons
     const icon = next === 'light' ? 'sun' : 'moon';
-    const label = next === 'light' ? 'Modo Oscuro' : 'Modo Claro';
-    
+    const label = next === 'light' ? I18n.t('selector.theme_toggle') : I18n.t('selector.theme_toggle');
+
     // Update project selector theme button
     const selectorBtn = document.getElementById('btn-theme-selector');
     if (selectorBtn) {
       selectorBtn.innerHTML = `<i data-lucide="${icon}"></i>`;
     }
-    
+
     // Update sidebar theme button
     const sidebarBtn = document.getElementById('btn-theme-toggle');
     if (sidebarBtn) {
       sidebarBtn.innerHTML = `<i data-lucide="${icon}"></i><span>${label}</span>`;
     }
-    
+
     // Update project selector logo
     const logoImg = document.getElementById('project-selector-logo');
     if (logoImg) {
       logoImg.src = next === 'light' ? 'img/logo-psa-bdp.svg' : 'img/logo-psa-bdp-white.svg';
     }
-    
+
     // Update icons
     lucide.createIcons();
   },
@@ -152,20 +156,21 @@ const App = {
       targetSection.classList.add('active');
     }
 
-    // Update title
+    // Update title using i18n
     const titles = {
-      dashboard: 'Dashboard del Proyecto',
-      cover: 'Cover Page',
-      scope: 'Scope & Requisitos',
-      kickoff: 'Kick-off Template',
-      plan: 'Project Plan',
-      psr: 'PSR - Project Status Report',
-      oil: 'Open Items - Action Tracker',
-      uat: 'UAT Test Tracker',
-      vacation: 'Vacation Coverage',
-      participants: 'Participantes',
-      finance: 'Cost Management',
-      email: 'Email Reporting'
+      dashboard: I18n.t('dashboard.title'),
+      cover: I18n.t('cover.title'),
+      scope: I18n.t('scope.title'),
+      kickoff: I18n.t('kickoff.title'),
+      plan: I18n.t('plan.title'),
+      psr: I18n.t('psr.title'),
+      oil: I18n.t('oil.title'),
+      uat: I18n.t('uat.title'),
+      vacation: I18n.t('vacation.title'),
+      participants: I18n.t('nav.participants'),
+      finance: I18n.t('nav.finance'),
+      jira: I18n.t('section.jira'),
+      email: I18n.t('email.title')
     };
     
     document.getElementById('section-title').textContent = titles[section] || section;
@@ -222,6 +227,9 @@ const App = {
       case 'finance':
         FinanceModule.load();
         break;
+      case 'jira':
+        JiraHierarchyModule.load();
+        break;
       case 'email':
         EmailModule.load();
         break;
@@ -265,11 +273,11 @@ const App = {
       };
       
       const statusLabels = {
-        draft: 'En preparación',
-        active: 'Activo',
-        'on-hold': 'En pausa',
-        completed: 'Completado',
-        cancelled: 'Cancelado'
+        draft: I18n.t('status.draft'),
+        active: I18n.t('status.active'),
+        'on-hold': I18n.t('status.on_hold'),
+        completed: I18n.t('status.completed'),
+        cancelled: I18n.t('status.cancelled')
       };
 
       const progress = project.progress || 0;
@@ -278,25 +286,34 @@ const App = {
         <div class="project-card" data-id="${project.id}">
           <div class="project-card-header">
             <div>
-              <div class="project-card-title">${this.escapeHtml(project.name || 'Sin nombre')}</div>
+              <div class="project-card-title">${this.escapeHtml(project.name || I18n.t('selector.no_name'))}</div>
               <div class="project-card-meta">${this.escapeHtml(project.code || '')}</div>
             </div>
             <span class="badge ${statusColors[project.status] || 'badge-neutral'}">${statusLabels[project.status] || project.status}</span>
           </div>
           <div class="project-card-meta">
-            <i data-lucide="building-2" style="width:14px;height:14px;"></i> ${this.escapeHtml(project.customer || 'Sin cliente')}
+            <i data-lucide="building-2" style="width:14px;height:14px;"></i> ${this.escapeHtml(project.customer || I18n.t('selector.no_customer'))}
           </div>
           <div class="project-card-meta">
-            <i data-lucide="calendar" style="width:14px;height:14px;"></i> ${project.startDate || 'Sin fecha'}
+            <i data-lucide="calendar" style="width:14px;height:14px;"></i> ${project.startDate || I18n.t('selector.no_date')}
           </div>
           <div style="margin-top:0.75rem;">
             <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-tertiary);margin-bottom:0.25rem;">
-              <span>Progreso</span>
+              <span>${I18n.t('dashboard.progress')}</span>
               <span>${progress}%</span>
             </div>
             <div class="progress-bar">
               <div class="progress-bar-fill ${progress >= 100 ? 'success' : progress >= 50 ? '' : 'warning'}" style="width: ${progress}%;"></div>
             </div>
+          </div>
+          <!-- Action buttons -->
+          <div class="project-card-actions" style="display:flex;gap:0.5rem;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);">
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); App.duplicateProject(${project.id})" title="${I18n.t('action.duplicate')}">
+              <i data-lucide="copy" style="width:14px;height:14px;"></i> ${I18n.t('action.duplicate')}
+            </button>
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); App.deleteProject(${project.id})" title="${I18n.t('action.delete')}" style="color:var(--danger);">
+              <i data-lucide="trash-2" style="width:14px;height:14px;"></i> ${I18n.t('action.delete')}
+            </button>
           </div>
         </div>
       `;
@@ -326,34 +343,193 @@ const App = {
   },
 
   async createProject() {
-    const name = await this.prompt('Nombre del proyecto:', '');
-    if (!name || !name.trim()) return;
+    const content = `
+      <div class="form-group">
+        <label class="form-label required">${I18n.t('cover.project_name')}</label>
+        <input type="text" class="form-control" id="new-project-name" placeholder="${I18n.t('project.name_placeholder')}">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">${I18n.t('cover.project_code')}</label>
+          <input type="text" class="form-control" id="new-project-code" placeholder="${I18n.t('project.code_placeholder')}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">${I18n.t('cover.project_type')}</label>
+          <select class="form-select" id="new-project-type">
+            <option value="">${I18n.t('action.select')}</option>
+            <option value="digital">${I18n.t('type.digital')}</option>
+            <option value="process">${I18n.t('type.process')}</option>
+            <option value="system">${I18n.t('type.system')}</option>
+            <option value="integration">${I18n.t('type.integration')}</option>
+            <option value="compliance">${I18n.t('type.compliance')}</option>
+            <option value="expansion">${I18n.t('type.expansion')}</option>
+            <option value="other">${I18n.t('type.other')}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">${I18n.t('cover.region')}</label>
+          <select class="form-select" id="new-project-region">
+            <option value="">${I18n.t('action.select')}</option>
+            <option value="global">${I18n.t('region.global')}</option>
+            <option value="europe">${I18n.t('region.europe')}</option>
+            <option value="americas">${I18n.t('region.americas')}</option>
+            <option value="asia">${I18n.t('region.asia')}</option>
+            <option value="mea">${I18n.t('region.mea')}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">${I18n.t('cover.customer')}</label>
+          <input type="text" class="form-control" id="new-project-customer" placeholder="${I18n.t('project.customer_placeholder')}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">${I18n.t('cover.start_date')}</label>
+          <input type="date" class="form-control" id="new-project-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">${I18n.t('cover.end_date')}</label>
+          <input type="date" class="form-control" id="new-project-end">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">JIRA Ticket</label>
+        <input type="text" class="form-control" id="new-project-jira" placeholder="e.g., PSA-1234">
+      </div>
+      <div class="form-group">
+        <label class="form-label">${I18n.t('cover.business_case')}</label>
+        <textarea class="form-textarea" id="new-project-business-case" rows="3" placeholder="${I18n.t('project.business_placeholder')}"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">${I18n.t('project.participants')}</label>
+        <div id="new-project-participants-list" style="margin-bottom:0.5rem;"></div>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" class="form-control" id="new-participant-name" placeholder="${I18n.t('participants.name')}" style="flex:1;">
+          <input type="text" class="form-control" id="new-participant-role" placeholder="${I18n.t('participants.role')}" style="flex:1;">
+          <button type="button" class="btn btn-outline" onclick="App.addParticipantToNewProject()">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+      </div>
+    `;
 
-    const project = {
-      name: name.trim(),
-      code: '',
-      status: 'draft',
-      type: '',
-      region: '',
-      progress: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    this.newProjectParticipants = [];
 
-    const id = await DB.add(STORES.PROJECTS, project);
-    
-    // Initialize empty cover data
-    await DB.put(STORES.COVER, {
-      projectId: id,
-      projectName: project.name,
-      status: 'draft'
+    this.openModal(I18n.t('project.new_title'), content, async () => {
+      const name = document.getElementById('new-project-name').value.trim();
+      if (!name) {
+        this.toast(I18n.t('project.name_required'), 'error');
+        return false;
+      }
+
+      const code = document.getElementById('new-project-code').value.trim();
+      const type = document.getElementById('new-project-type').value;
+      const region = document.getElementById('new-project-region').value;
+      const customer = document.getElementById('new-project-customer').value.trim();
+      const startDate = document.getElementById('new-project-start').value;
+      const endDate = document.getElementById('new-project-end').value;
+      const jiraTicket = document.getElementById('new-project-jira').value.trim();
+      const businessCase = document.getElementById('new-project-business-case').value.trim();
+
+      const project = {
+        name: name,
+        code: code,
+        status: 'draft',
+        type: type,
+        region: region,
+        customer: customer,
+        startDate: startDate,
+        endDate: endDate,
+        progress: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      const id = await DB.add(STORES.PROJECTS, project);
+
+      // Create cover data with all the information
+      await DB.put(STORES.COVER, {
+        projectId: id,
+        projectName: name,
+        projectCode: code,
+        projectType: type,
+        region: region,
+        startDate: startDate,
+        endDate: endDate,
+        customer: customer,
+        businessCase: businessCase,
+        jiraTicket: jiraTicket,
+        status: 'draft'
+      });
+
+      // Add participants if any
+      if (this.newProjectParticipants.length > 0) {
+        for (const participant of this.newProjectParticipants) {
+          await DB.add(STORES.PARTICIPANTS, {
+            projectId: id,
+            name: participant.name,
+            role: participant.role,
+            createdAt: new Date().toISOString()
+          });
+        }
+      }
+
+      this.newProjectParticipants = [];
+      this.toast(I18n.t('project.created'), 'success');
+      await this.renderProjectList();
+      this.openProject(id);
     });
 
-    this.toast('Proyecto creado', 'success');
-    await this.renderProjectList();
-    
-    // Auto-open the new project
-    this.openProject(id);
+    // Initialize icons after modal opens
+    setTimeout(() => lucide.createIcons(), 100);
+  },
+
+  addParticipantToNewProject() {
+    const nameInput = document.getElementById('new-participant-name');
+    const roleInput = document.getElementById('new-participant-role');
+    const name = nameInput.value.trim();
+    const role = roleInput.value.trim();
+
+    if (!name) {
+      this.toast(I18n.t('participants.name_required'), 'error');
+      return;
+    }
+
+    this.newProjectParticipants.push({ name, role });
+    this.renderNewProjectParticipants();
+
+    nameInput.value = '';
+    roleInput.value = '';
+    nameInput.focus();
+  },
+
+  removeParticipantFromNewProject(index) {
+    this.newProjectParticipants.splice(index, 1);
+    this.renderNewProjectParticipants();
+  },
+
+  renderNewProjectParticipants() {
+    const container = document.getElementById('new-project-participants-list');
+    if (!container) return;
+
+    if (this.newProjectParticipants.length === 0) {
+      container.innerHTML = `<p style="color:var(--text-tertiary);font-size:0.875rem;">${I18n.t('participants.empty')}</p>`;
+      return;
+    }
+
+    container.innerHTML = this.newProjectParticipants.map((p, i) => `
+      <div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem;background:var(--bg-tertiary);border-radius:var(--radius);margin-bottom:0.25rem;">
+        <span style="flex:1;font-weight:500;">${this.escapeHtml(p.name)}</span>
+        <span style="color:var(--text-secondary);font-size:0.875rem;">${this.escapeHtml(p.role || '-')}</span>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="App.removeParticipantFromNewProject(${i})" style="color:var(--danger);">
+          <i data-lucide="x" style="width:14px;height:14px;"></i>
+        </button>
+      </div>
+    `).join('');
+
+    lucide.createIcons();
   },
 
   async openProject(id) {
@@ -716,6 +892,205 @@ const App = {
       navigator.serviceWorker.register('sw.js')
         .then(reg => console.log('SW registered'))
         .catch(err => console.log('SW registration failed'));
+    }
+  },
+
+  // Options Menu
+  initOptions() {
+    const btn = document.getElementById('btn-options');
+    const dropdown = document.getElementById('options-dropdown');
+    const container = document.querySelector('.options-menu-container');
+    
+    if (!btn || !dropdown) return;
+    
+    // Toggle dropdown
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.style.display === 'block';
+      dropdown.style.display = isOpen ? 'none' : 'block';
+      container.classList.toggle('open', !isOpen);
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!container.contains(e.target)) {
+        dropdown.style.display = 'none';
+        container.classList.remove('open');
+      }
+    });
+    
+    // Update active language button
+    this.updateLanguageButton();
+  },
+
+  updateLanguageButton() {
+    const currentLang = I18n.getCurrentLang();
+    document.querySelectorAll('.option-btn[data-lang]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === currentLang);
+    });
+  },
+
+  async setLanguage(lang) {
+    if (I18n.setLanguage(lang)) {
+      this.updateLanguageButton();
+
+      // Re-render dynamic content that uses I18n.t()
+      const projectSelector = document.getElementById('project-selector');
+      if (projectSelector && projectSelector.style.display !== 'none') {
+        console.log('Re-rendering project list in new language');
+        await this.renderProjectList();
+      }
+
+      // If inside a project, reload all modules
+      if (this.currentProject) {
+        console.log('Reloading modules in new language. Current section:', this.currentSection);
+
+        // Reload all modules to ensure they get the new language
+        const modulesToReload = ['dashboard', 'cover', 'scope', 'kickoff', 'plan', 'psr', 'oil', 'uat', 'vacation', 'participants', 'finance', 'email'];
+
+        for (const moduleName of modulesToReload) {
+          const module = this.modules[moduleName];
+          if (module && typeof module.load === 'function') {
+            try {
+              await module.load();
+              console.log(`Reloaded module: ${moduleName}`);
+            } catch (e) {
+              console.error(`Error reloading module ${moduleName}:`, e);
+            }
+          }
+        }
+      }
+
+      this.toast(I18n.t('language_changed', {lang: lang === 'es' ? 'Español' : 'English'}), 'success');
+    }
+  },
+
+  // Export all projects
+  async exportAllProjects() {
+    try {
+      this.toast(I18n.t('toast.loading'), 'info');
+      
+      const projects = await DB.getAll('projects');
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        version: '1.0',
+        projects: []
+      };
+      
+      for (const project of projects) {
+        const projectData = await this.exportProjectData(project.id);
+        exportData.projects.push({
+          project: project,
+          data: projectData
+        });
+      }
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `psa_bdp_all_projects_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      this.toast(`${exportData.projects.length} projects exported`, 'success');
+    } catch (err) {
+      console.error('Export error:', err);
+      this.toast(I18n.t('toast.error'), 'error');
+    }
+  },
+
+  async exportProjectData(projectId) {
+    const stores = ['cover', 'scope', 'kickoff', 'plan', 'psr', 'oil', 'uat', 'vacation', 'participants', 'vendors', 'budget', 'expenses', 'email'];
+    const data = {};
+    
+    for (const store of stores) {
+      try {
+        data[store] = await DB.getAll(store, 'projectId', projectId);
+      } catch (e) {
+        data[store] = [];
+      }
+    }
+    
+    return data;
+  },
+
+  // Project management functions
+  async deleteProject(id) {
+    const confirmed = await this.confirm(I18n.t('project.confirm_delete'));
+    if (!confirmed) return;
+
+    try {
+      // Delete project and all related data
+      await DB.delete(STORES.PROJECTS, id);
+
+      // Delete all related store data
+      const stores = [STORES.COVER, STORES.SCOPE, STORES.KICKOFF, STORES.PLAN, STORES.PSR, STORES.OIL, STORES.UAT, STORES.VACATION, STORES.PARTICIPANTS, STORES.VENDORS, STORES.BUDGET, STORES.EXPENSES, STORES.EMAIL];
+      for (const store of stores) {
+        try {
+          const items = await DB.getAll(store, 'projectId', id);
+          for (const item of items) {
+            await DB.delete(store, item.id);
+          }
+        } catch (e) {
+          // Store might not exist, continue
+        }
+      }
+
+      await this.renderProjectList();
+      this.toast(I18n.t('project.deleted'), 'success');
+    } catch (err) {
+      console.error('Error deleting project:', err);
+      this.toast(I18n.t('toast.error'), 'error');
+    }
+  },
+
+  async duplicateProject(id) {
+    try {
+      const project = await DB.get(STORES.PROJECTS, id);
+      if (!project) {
+        this.toast(I18n.t('project.not_found'), 'error');
+        return;
+      }
+
+      // Create duplicated project
+      const newProject = {
+        ...project,
+        id: undefined, // Let DB generate new ID
+        name: `${project.name} (${I18n.t('project.copy')})`,
+        code: project.code ? `${project.code}-COPY` : '',
+        status: 'draft',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      const newProjectId = await DB.add(STORES.PROJECTS, newProject);
+
+      // Duplicate all related data
+      const stores = [STORES.COVER, STORES.SCOPE, STORES.KICKOFF, STORES.PLAN, STORES.PSR, STORES.OIL, STORES.UAT, STORES.VACATION, STORES.PARTICIPANTS, STORES.VENDORS, STORES.BUDGET, STORES.EXPENSES, STORES.EMAIL];
+      for (const store of stores) {
+        try {
+          const items = await DB.getAll(store, 'projectId', id);
+          for (const item of items) {
+            const newItem = {
+              ...item,
+              id: undefined, // Let DB generate new ID
+              projectId: newProjectId,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+            await DB.add(store, newItem);
+          }
+        } catch (e) {
+          // Store might not exist, continue
+        }
+      }
+
+      await this.renderProjectList();
+      this.toast(I18n.t('project.duplicated'), 'success');
+    } catch (err) {
+      console.error('Error duplicating project:', err);
+      this.toast(I18n.t('toast.error'), 'error');
     }
   }
 };
