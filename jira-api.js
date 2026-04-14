@@ -56,57 +56,95 @@ const JiraApiModule = {
     const url = `${baseUrl}${endpoint}`;
     const auth = btoa(`${this.config.email}:${this.config.apiToken}`);
     
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...options.headers
+    console.log('JIRA: Fetching', url, 'Method:', options.method || 'GET');
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...options.headers
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('JIRA: HTTP Error', response.status, errorText);
+        
+        // Provide more specific error messages
+        if (response.status === 400) {
+          throw new Error(`Solicitud inválida (400). Verifica que el Project Key '${this.config.projectKey}' sea correcto y que existan issues en el proyecto.`);
+        } else if (response.status === 401) {
+          throw new Error(`No autorizado (401). Verifica tu email y API Token.`);
+        } else if (response.status === 403) {
+          throw new Error(`Prohibido (403). No tienes permisos para acceder a este proyecto.`);
+        } else if (response.status === 404) {
+          throw new Error(`No encontrado (404). Verifica la URL de JIRA: ${baseUrl}`);
+        }
+        
+        throw new Error(`Error HTTP ${response.status}: ${errorText.substring(0, 200)}`);
       }
-    });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`JIRA API Error: ${response.status} - ${error}`);
+      return response.json();
+    } catch (fetchError) {
+      // If it's a CORS or network error, provide a clearer message
+      if (fetchError.message.includes('Failed to fetch') || fetchError.message.includes('NetworkError')) {
+        console.error('JIRA: Network/CORS Error', fetchError);
+        throw new Error(
+          'Error de red/CORS al conectar con JIRA. ' +
+          'Esto ocurre porque el navegador bloquea conexiones entre dominios.\n\n' +
+          'SOLUCIONES:\n' +
+          '1. Instala extensión "CORS Unblock" en Chrome/Edge\n' +
+          '2. Usa "Importar CSV JIRA" (más confiable)\n' +
+          '3. El test de conexión puede funcionar pero las búsquedas con POST pueden ser bloqueadas'
+        );
+      }
+      throw fetchError;
     }
-
-    return response.json();
   },
 
   // Get all Epics from JIRA project
   async getEpics() {
-    const jql = `project = ${this.config.projectKey} AND issuetype = Epic ORDER BY created DESC`;
-    return this.searchIssues(jql, ['summary', 'description', 'status', 'assignee', 'reporter', 
-      'created', 'updated', 'duedate', 'priority', 'labels', 'customfield_10014', // Epic Name
-      'customfield_10015', // Epic Status
-      'customfield_10019', // RAG Status
-      'customfield_10020', // Investment Amount
-      'customfield_10021', // Investment Recovery
-      'customfield_10022', // Region
-      'customfield_10023', // Stakeholders
-      'customfield_10024', // Platforms
-      'customfield_10025'  // Success Criteria
-    ]);
+    try {
+      const jql = `project = ${this.config.projectKey} AND issuetype = Epic ORDER BY created DESC`;
+      console.log('JIRA: Searching Epics with JQL:', jql);
+      return this.searchIssues(jql, ['summary', 'description', 'status', 'assignee', 'reporter', 
+        'created', 'updated', 'duedate', 'priority', 'labels'
+      ]);
+    } catch (error) {
+      console.error('JIRA: Error getting Epics:', error);
+      throw new Error('Error al obtener Epics: ' + error.message);
+    }
   },
 
   // Get all Tasks from JIRA project
   async getTasks() {
-    const jql = `project = ${this.config.projectKey} AND issuetype = Task ORDER BY created DESC`;
-    return this.searchIssues(jql, ['summary', 'description', 'status', 'assignee', 'reporter',
-      'created', 'updated', 'duedate', 'priority', 'labels', 'parent',
-      'customfield_10026', // Effort Estimate
-      'customfield_10027', // Acceptance Criteria
-      'customfield_10022'  // Region
-    ]);
+    try {
+      const jql = `project = ${this.config.projectKey} AND issuetype = Task ORDER BY created DESC`;
+      console.log('JIRA: Searching Tasks with JQL:', jql);
+      return this.searchIssues(jql, ['summary', 'description', 'status', 'assignee', 'reporter',
+        'created', 'updated', 'duedate', 'priority', 'labels', 'parent'
+      ]);
+    } catch (error) {
+      console.error('JIRA: Error getting Tasks:', error);
+      throw new Error('Error al obtener Tasks: ' + error.message);
+    }
   },
 
   // Get all Sub-tasks from JIRA project
   async getSubtasks() {
-    const jql = `project = ${this.config.projectKey} AND issuetype = Sub-task ORDER BY created DESC`;
-    return this.searchIssues(jql, ['summary', 'description', 'status', 'assignee', 'reporter',
-      'created', 'updated', 'duedate', 'priority', 'parent'
-    ]);
+    try {
+      const jql = `project = ${this.config.projectKey} AND issuetype = Sub-task ORDER BY created DESC`;
+      console.log('JIRA: Searching Sub-tasks with JQL:', jql);
+      return this.searchIssues(jql, ['summary', 'description', 'status', 'assignee', 'reporter',
+        'created', 'updated', 'duedate', 'priority', 'parent'
+      ]);
+    } catch (error) {
+      console.error('JIRA: Error getting Sub-tasks:', error);
+      throw new Error('Error al obtener Sub-tasks: ' + error.message);
+    }
   },
 
   // Search issues with JQL
