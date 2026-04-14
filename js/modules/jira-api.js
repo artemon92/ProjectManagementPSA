@@ -37,7 +37,15 @@ const JiraApiModule = {
 
   // Generic fetch with auth
   async fetchJira(endpoint, options = {}) {
-    const url = `${this.config.baseUrl}${endpoint}`;
+    // Ensure baseUrl has protocol
+    let baseUrl = this.config.baseUrl;
+    if (baseUrl && !baseUrl.startsWith('http')) {
+      baseUrl = 'https://' + baseUrl;
+    }
+    // Remove trailing slash if present
+    baseUrl = baseUrl.replace(/\/$/, '');
+    
+    const url = `${baseUrl}${endpoint}`;
     const auth = btoa(`${this.config.email}:${this.config.apiToken}`);
     
     const response = await fetch(url, {

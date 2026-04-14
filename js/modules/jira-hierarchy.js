@@ -78,8 +78,16 @@ const JiraHierarchyModule = {
     `;
 
     App.openModal(I18n.t('jira.config_title'), content, async () => {
+      let baseUrl = document.getElementById('jira-config-url').value.trim();
+      // Ensure URL has protocol
+      if (baseUrl && !baseUrl.startsWith('http')) {
+        baseUrl = 'https://' + baseUrl;
+      }
+      // Remove trailing slash
+      baseUrl = baseUrl.replace(/\/$/, '');
+      
       const newConfig = {
-        baseUrl: document.getElementById('jira-config-url').value.trim(),
+        baseUrl: baseUrl,
         email: document.getElementById('jira-config-email').value.trim(),
         apiToken: document.getElementById('jira-config-token').value.trim(),
         projectKey: document.getElementById('jira-config-project').value.trim() || 'GOF'
