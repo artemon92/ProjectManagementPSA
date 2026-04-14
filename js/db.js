@@ -223,6 +223,9 @@ class Database {
     data.uat = await this.getAll(STORES.UAT, 'projectId', projectId);
     data.vacation = await this.getAll(STORES.VACATION, 'projectId', projectId);
     data.participants = await this.getAll(STORES.PARTICIPANTS, 'projectId', projectId);
+    data.budget = await this.getAll(STORES.BUDGET, 'projectId', projectId);
+    data.expenses = await this.getAll(STORES.EXPENSES, 'projectId', projectId);
+    data.vendors = await this.getAll(STORES.VENDORS, 'projectId', projectId);
     
     return data;
   }
@@ -285,6 +288,18 @@ class Database {
 
     for (const item of data.participants || []) {
       await this.add(STORES.PARTICIPANTS, { ...item, projectId: newProjectId, id: undefined });
+    }
+
+    for (const item of data.budget || []) {
+      await this.add(STORES.BUDGET, { ...item, projectId: newProjectId, id: undefined });
+    }
+
+    for (const item of data.expenses || []) {
+      await this.add(STORES.EXPENSES, { ...item, projectId: newProjectId, id: undefined });
+    }
+
+    for (const item of data.vendors || []) {
+      await this.add(STORES.VENDORS, { ...item, projectId: newProjectId, id: undefined });
     }
 
     return newProjectId;
