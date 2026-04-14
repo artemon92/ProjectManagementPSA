@@ -47,6 +47,12 @@ const JiraHierarchyModule = {
         await this.renderEpics();
       } catch (err) {
         console.error('Sync error:', err);
+        // Show detailed error to user
+        if (err.message && err.message.includes('CORS')) {
+          App.toast(err.message, 'error', 10000); // Show for 10 seconds
+        } else {
+          App.toast('Error de sincronización: ' + (err.message || 'Error desconocido'), 'error');
+        }
       }
     });
   },
@@ -109,9 +115,18 @@ const JiraHierarchyModule = {
         statusDiv.style.color = '#10B981';
         setTimeout(() => App.closeModal(), 1500);
       } else {
-        statusDiv.textContent = I18n.t('jira.config_error') + ': ' + result.error;
-        statusDiv.style.background = '#EF444420';
-        statusDiv.style.color = '#EF4444';
+        // Show detailed error for CORS
+        if (result.error === 'CORS_BLOCKED') {
+          statusDiv.innerHTML = '<strong>⚠️ Error de CORS (Cross-Origin)</strong><br><br>' + 
+            result.details.replace(/\n/g, '<br>').replace(/\n\n/g, '<br><br>');
+          statusDiv.style.background = '#FEF3C7';
+          statusDiv.style.color = '#92400E';
+          statusDiv.style.border = '1px solid #F59E0B';
+        } else {
+          statusDiv.textContent = I18n.t('jira.config_error') + ': ' + result.error;
+          statusDiv.style.background = '#EF444420';
+          statusDiv.style.color = '#EF4444';
+        }
         return false; // Don't close modal on error
       }
     }, { confirmText: I18n.t('jira.config_save') });
