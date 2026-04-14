@@ -154,19 +154,26 @@ const JiraApiModule = {
   async fetchViaProxy(endpoint, options = {}) {
     const proxyUrl = this.config.proxyUrl.replace(/\/$/, '');
     
+    // Extraer query params del endpoint si existen
+    const [path, queryString] = endpoint.split('?');
+    
     // Map JIRA endpoints to proxy endpoints
     let proxyEndpoint;
-    if (endpoint === '/rest/api/3/myself') {
+    if (path === '/rest/api/3/myself') {
       proxyEndpoint = '/api/jira/myself';
-    } else if (endpoint === '/rest/api/3/search') {
+    } else if (path === '/rest/api/3/search') {
       proxyEndpoint = '/api/jira/search';
     } else {
       // Remove /rest/api/3/ prefix for generic proxy
-      const path = endpoint.replace('/rest/api/3/', '');
-      proxyEndpoint = `/api/jira/${path}`;
+      const cleanPath = path.replace('/rest/api/3/', '');
+      proxyEndpoint = `/api/jira/${cleanPath}`;
     }
     
-    const url = `${proxyUrl}${proxyEndpoint}`;
+    // Construir URL con query params
+    let url = `${proxyUrl}${proxyEndpoint}`;
+    if (queryString) {
+      url += `?${queryString}`;
+    }
     
     console.log('JIRA: Fetching via proxy', url, 'Method:', options.method || 'GET');
     
@@ -248,12 +255,26 @@ const JiraApiModule = {
 
   // Search issues with JQL
   async searchIssues(jql, fields = null) {
+    const fieldsList = fields || ['summary', 'status', 'assignee', 'created', 'updated'];
+    
+    // Si hay proxy, usar GET con query params (nuevo formato JIRA)
+    if (this.config.proxyUrl) {
+      const queryParams = new URLSearchParams({
+        jql: jql,
+        maxResults: '100',
+        fields: fieldsList.join(',')
+      });
+      const response = await this.fetchJira(`/rest/api/3/search?${queryParams.toString()}`);
+      return response.issues || [];
+    }
+    
+    // Sin proxy, usar POST con body (formato antiguo, puede no funcionar)
     const body = {
       jql: jql,
       maxResults: 100,
-      fields: fields || ['summary', 'status', 'assignee', 'created', 'updated']
+      fields: fieldsList
     };
-
+    
     const response = await this.fetchJira('/rest/api/3/search', {
       method: 'POST',
       body: JSON.stringify(body)
