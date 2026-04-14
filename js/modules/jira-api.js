@@ -89,18 +89,28 @@ const JiraApiModule = {
 
       return response.json();
     } catch (fetchError) {
-      // If it's a CORS or network error, provide a clearer message
-      if (fetchError.message.includes('Failed to fetch') || fetchError.message.includes('NetworkError')) {
-        console.error('JIRA: Network/CORS Error', fetchError);
+      console.error('JIRA: Fetch error details:', fetchError.name, fetchError.message);
+      
+      // Check if it's specifically a CORS error (TypeError with Failed to fetch and no status)
+      const isCORSError = fetchError.name === 'TypeError' && 
+                         fetchError.message.includes('Failed to fetch') &&
+                         !fetchError.message.includes('401') &&
+                         !fetchError.message.includes('403') &&
+                         !fetchError.message.includes('404');
+      
+      if (isCORSError) {
+        console.error('JIRA: CORS Error detected');
         throw new Error(
-          'Error de red/CORS al conectar con JIRA. ' +
-          'Esto ocurre porque el navegador bloquea conexiones entre dominios.\n\n' +
+          'BLOQUEO DE CORS: El navegador no permite conectar con JIRA desde esta página.\n\n' +
           'SOLUCIONES:\n' +
           '1. Instala extensión "CORS Unblock" en Chrome/Edge\n' +
-          '2. Usa "Importar CSV JIRA" (más confiable)\n' +
-          '3. El test de conexión puede funcionar pero las búsquedas con POST pueden ser bloqueadas'
+          '2. Usa el botón "Importar CSV JIRA" en lugar de Sync\n' +
+          '3. Exporta CSV desde JIRA (Issues → Export → CSV) e impórtalo aquí\n\n' +
+          'Nota: Si ya instalaste la extensión, recarga la página con Ctrl+F5'
         );
       }
+      
+      // For other errors, throw the original error
       throw fetchError;
     }
   },
