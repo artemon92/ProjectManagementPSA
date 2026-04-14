@@ -8,7 +8,8 @@ const JiraApiModule = {
     baseUrl: localStorage.getItem('jira_baseUrl') || '',
     email: localStorage.getItem('jira_email') || '',
     apiToken: localStorage.getItem('jira_apiToken') || '',
-    projectKey: localStorage.getItem('jira_projectKey') || 'GOF'
+    projectKey: localStorage.getItem('jira_projectKey') || 'GOF',
+    proxyUrl: localStorage.getItem('jira_proxyUrl') || null
   },
 
   // Save configuration
@@ -18,11 +19,27 @@ const JiraApiModule = {
     localStorage.setItem('jira_email', this.config.email);
     localStorage.setItem('jira_apiToken', this.config.apiToken);
     localStorage.setItem('jira_projectKey', this.config.projectKey);
+    if (this.config.proxyUrl) {
+      localStorage.setItem('jira_proxyUrl', this.config.proxyUrl);
+    } else {
+      localStorage.removeItem('jira_proxyUrl');
+    }
   },
 
   // Get stored config
   getConfig() {
     return this.config;
+  },
+
+  // Initialize config from localStorage
+  initConfig() {
+    this.config = {
+      baseUrl: localStorage.getItem('jira_baseUrl') || '',
+      email: localStorage.getItem('jira_email') || '',
+      apiToken: localStorage.getItem('jira_apiToken') || '',
+      projectKey: localStorage.getItem('jira_projectKey') || 'GOF',
+      proxyUrl: localStorage.getItem('jira_proxyUrl') || null
+    };
   },
 
   // Test connection to JIRA
@@ -33,10 +50,18 @@ const JiraApiModule = {
     } catch (error) {
       // Check if it's a CORS error
       if (error.message.includes('Failed to fetch') || error.message.includes('CORS') || error.message.includes('NetworkError')) {
+        // Check if proxy is configured
+        if (this.config.proxyUrl) {
+          return { 
+            success: false, 
+            error: 'PROXY_ERROR',
+            details: `Error con el proxy configurado (${this.config.proxyUrl}). Verifica que el servidor proxy esté funcionando correctamente.\n\nError original: ${error.message}`
+          };
+        }
         return { 
           success: false, 
           error: 'CORS_BLOCKED',
-          details: 'El navegador bloquea la conexión a JIRA por seguridad (CORS).\n\nSoluciones:\n1. Instala extensión "CORS Unblock" en Chrome/Edge\n2. Usa "Importar CSV JIRA" en lugar de la API\n3. Ejecuta la app desde un servidor con proxy\n\nLa extensión es la opción más rápida.'
+          details: 'El navegador bloquea la conexión a JIRA por seguridad (CORS).\n\nSOLUCIONES:\n1. CONFIGURA SERVIDOR PROXY (recomendado)\n   - Ya tienes proxy desplegado en: ' + this.config.proxyUrl + '\n   - Asegúrate de que la URL esté guardada en la configuración\n2. Instala extensión "CORS Unblock"\n3. Usa "Importar CSV JIRA"'
         };
       }
       return { success: false, error: error.message };
