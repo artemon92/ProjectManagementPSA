@@ -80,6 +80,18 @@ const JiraHierarchyModule = {
         <input type="text" class="form-control" id="jira-config-project" value="${App.escapeHtml(config.projectKey)}" placeholder="GOF">
         <small style="color:var(--text-tertiary);">${I18n.t('jira.config_project_help')}</small>
       </div>
+      <div style="margin: 1.5rem 0; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius);">
+        <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+          ⚙️ Servidor Proxy (Opcional - Soluciona CORS)
+        </h4>
+        <div class="form-group" style="margin-bottom: 0.5rem;">
+          <label class="form-label">URL del Proxy</label>
+          <input type="text" class="form-control" id="jira-config-proxy" value="${App.escapeHtml(config.proxyUrl || '')}" placeholder="https://tu-proxy.railway.app">
+          <small style="color:var(--text-tertiary);">
+            Despliega el servidor proxy para evitar errores CORS. Ver: proxy-server/DEPLOY.md
+          </small>
+        </div>
+      </div>
       <div id="jira-config-status" style="margin-top:1rem;padding:0.75rem;border-radius:var(--radius);display:none;"></div>
     `;
 
@@ -96,7 +108,8 @@ const JiraHierarchyModule = {
         baseUrl: baseUrl,
         email: document.getElementById('jira-config-email').value.trim(),
         apiToken: document.getElementById('jira-config-token').value.trim(),
-        projectKey: document.getElementById('jira-config-project').value.trim() || 'GOF'
+        projectKey: document.getElementById('jira-config-project').value.trim() || 'GOF',
+        proxyUrl: document.getElementById('jira-config-proxy').value.trim() || null
       };
 
       JiraApiModule.saveConfig(newConfig);

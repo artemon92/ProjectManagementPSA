@@ -43,8 +43,19 @@ const JiraApiModule = {
     }
   },
 
-  // Generic fetch with auth
+  // Generic fetch with auth - supports proxy server
   async fetchJira(endpoint, options = {}) {
+    // Check if proxy is configured
+    if (this.config.proxyUrl) {
+      return this.fetchViaProxy(endpoint, options);
+    }
+    
+    // Direct connection to JIRA (may have CORS issues)
+    return this.fetchDirect(endpoint, options);
+  },
+
+  // Fetch directly to JIRA (original method)
+  async fetchDirect(endpoint, options = {}) {
     // Ensure baseUrl has protocol
     let baseUrl = this.config.baseUrl;
     if (baseUrl && !baseUrl.startsWith('http')) {
@@ -91,7 +102,7 @@ const JiraApiModule = {
     } catch (fetchError) {
       console.error('JIRA: Fetch error details:', fetchError.name, fetchError.message);
       
-      // Check if it's specifically a CORS error (TypeError with Failed to fetch and no status)
+      // Check if it's specifically a CORS error
       const isCORSError = fetchError.name === 'TypeError' && 
                          fetchError.message.includes('Failed to fetch') &&
                          !fetchError.message.includes('401') &&
@@ -101,18 +112,71 @@ const JiraApiModule = {
       if (isCORSError) {
         console.error('JIRA: CORS Error detected');
         throw new Error(
-          'BLOQUEO DE CORS: El navegador no permite conectar con JIRA desde esta página.\n\n' +
+          'BLOQUEO DE CORS: El navegador no permite conectar con JIRA directamente.\n\n' +
           'SOLUCIONES:\n' +
-          '1. Instala extensión "CORS Unblock" en Chrome/Edge\n' +
-          '2. Usa el botón "Importar CSV JIRA" en lugar de Sync\n' +
-          '3. Exporta CSV desde JIRA (Issues → Export → CSV) e impórtalo aquí\n\n' +
-          'Nota: Si ya instalaste la extensión, recarga la página con Ctrl+F5'
+          '1. Usa SERVIDOR PROXY (recomendado): Despliega el proxy en Railway/Render\n' +
+          '2. Instala extensión "CORS Unblock" (puede no funcionar siempre)\n' +
+          '3. Usa "Importar CSV JIRA" (más confiable)\n\n' +
+          'Ver archivo proxy-server/DEPLOY.md para instrucciones del proxy.'
         );
       }
       
-      // For other errors, throw the original error
       throw fetchError;
     }
+  },
+
+  // Fetch via proxy server (no CORS issues)
+  async fetchViaProxy(endpoint, options = {}) {
+    const proxyUrl = this.config.proxyUrl.replace(/\/$/, '');
+    
+    // Map JIRA endpoints to proxy endpoints
+    let proxyEndpoint;
+    if (endpoint === '/rest/api/3/myself') {
+      proxyEndpoint = '/api/jira/myself';
+    } else if (endpoint === '/rest/api/3/search') {
+      proxyEndpoint = '/api/jira/search';
+    } else {
+      // Remove /rest/api/3/ prefix for generic proxy
+      const path = endpoint.replace('/rest/api/3/', '');
+      proxyEndpoint = `/api/jira/${path}`;
+    }
+    
+    const url = `${proxyUrl}${proxyEndpoint}`;
+    
+    console.log('JIRA: Fetching via proxy', url, 'Method:', options.method || 'GET');
+    
+    // Ensure baseUrl has protocol for headers
+    let baseUrl = this.config.baseUrl;
+    if (baseUrl && !baseUrl.startsWith('http')) {
+      baseUrl = 'https://' + baseUrl;
+    }
+    baseUrl = baseUrl.replace(/\/$/, '');
+    
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-jira-url': baseUrl,
+        'x-jira-email': this.config.email,
+        'x-jira-token': this.config.apiToken,
+        ...options.headers
+      }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('JIRA Proxy: HTTP Error', response.status, errorText);
+      
+      try {
+        const errorJson = JSON.parse(errorText);
+        throw new Error(errorJson.message || errorJson.error || `Error HTTP ${response.status}`);
+      } catch {
+        throw new Error(`Error del proxy: ${errorText.substring(0, 200)}`);
+      }
+    }
+
+    return response.json();
   },
 
   // Get all Epics from JIRA project
