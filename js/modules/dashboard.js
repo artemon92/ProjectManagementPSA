@@ -262,22 +262,12 @@ const DashboardModule = {
       App.navigateTo('psr');
     });
     
-    // Open Items buttons
-    document.getElementById('btn-dash-add-oil')?.addEventListener('click', () => {
-      App.navigateTo('oil');
-      setTimeout(() => OilModule.add(), 100);
-    });
-    
+    // Open Items button
     document.getElementById('btn-dash-view-all-oil')?.addEventListener('click', () => {
       App.navigateTo('oil');
     });
     
-    // Vacation buttons
-    document.getElementById('btn-dash-add-vacation')?.addEventListener('click', () => {
-      App.navigateTo('vacation');
-      setTimeout(() => VacationModule.add(), 100);
-    });
-    
+    // Vacation button
     document.getElementById('btn-dash-view-all-vacation')?.addEventListener('click', () => {
       App.navigateTo('vacation');
     });
