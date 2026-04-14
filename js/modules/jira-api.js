@@ -294,7 +294,7 @@ const JiraApiModule = {
       throw new Error('JIRA configuration is incomplete. Please configure connection first.');
     }
 
-    // Test connection first
+    // Test connection first (optional when using proxy)
     const testResult = await this.testConnection();
     if (!testResult.success) {
       if (testResult.error === 'CORS_BLOCKED') {
@@ -307,7 +307,12 @@ const JiraApiModule = {
           'La opción 2 (CSV) funciona perfectamente y es más confiable.'
         );
       }
-      throw new Error(testResult.error);
+      // If using proxy, log warning but continue (search might still work)
+      if (this.config.proxyUrl) {
+        console.warn('JIRA: Test connection failed, but trying sync anyway with proxy:', testResult.error);
+      } else {
+        throw new Error(testResult.error);
+      }
     }
 
     App.toast(I18n.t('jira.sync_start'), 'info');
